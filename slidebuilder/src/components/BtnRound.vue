@@ -1,5 +1,5 @@
 <template>
-<div class="main-container-btn2 center-middle" @click="btn2Click">
+<div class="main-container-btnRound center-middle" @click="btnRoundClick">
   <slot></slot>
 </div>
 </template>
@@ -21,7 +21,8 @@ import { mapMutations } from 'vuex';
 
 export default {
   props: [
-    'name'
+    'name',
+    'index'
   ],
   components: {
     // HelloWorld
@@ -33,9 +34,10 @@ export default {
 
   methods: {
     ...mapMutations(['commitToStateDispatcher']),
-    btn2Click(){
+    btnRoundClick(){
       let payload = {
-        controlName: this.name
+        controlName: this.name,
+        index: this.index
       }
       this.commitToStateDispatcher(payload);
     }
@@ -52,19 +54,20 @@ export default {
 </script>
 
 <style scoped>
-.main-container-btn2{
-  width: 100%;
-  height: 35px;
-  background-color: rgb(241, 89, 70);
-  background-color: rgb(175, 203, 255);
+.main-container-btnRound{
+  width: 30px;
+  height: 30px;
+  background-color:rgb(64, 201, 162);
   border-radius: 10px;
   color: rgb(42, 50, 75);
   font-weight: bold;
   cursor: pointer;
   box-shadow: 1px 1px 2px rgba(0, 0, 0, .8);
 }
-.main-container-btn2:hover{
+.main-container-btnRound:hover{
   transition: .3s;
+  color:rgba(0, 0, 0, .5);
   box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 1);
+  
 }
 </style>

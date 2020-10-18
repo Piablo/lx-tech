@@ -1,6 +1,8 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import Home from '../views/Home.vue';
+import AddCourse from '../modals/AddCourse';
+import AddLesson from '../modals/AddLesson';
 
 Vue.use(VueRouter)
 
@@ -8,7 +10,11 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    components: {
+      default: Home,
+      addCourse: AddCourse,
+      addLesson: AddLesson,
+    }
   },
   {
     path: '/about',

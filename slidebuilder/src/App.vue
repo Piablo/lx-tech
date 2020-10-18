@@ -1,13 +1,17 @@
 <template>
   <div id="app">
     <div v-if="showSpinner"><Spinner></Spinner></div>
+    <div class="modal-container-app" v-if="showModal">
+      <Modal :routerView="modalRouteName" :label="modalLabel"></Modal>
+    </div>
     <router-view/>
   </div>
 </template>
 
 <script>
 //Components
-import Spinner from './components/Spinner.vue'
+import Spinner from './components/Spinner.vue';
+import Modal from './components/Modal.vue';
 
 //Services
 //import { bus }from '@/services/Bus';
@@ -20,21 +24,31 @@ export default {
     'data'
   ],
   components: {
-    Spinner
+    Spinner,
+    Modal
   },
   data(){
     return {
-      showSpinner: false
+      showSpinner: false,
+      showModal: false,
+      modalRouteName: null,
+      modalLabel: null,
     }
   },
   created(){
     this.showSpinner = this.getSpinnerState;
   },
-  computed: mapGetters(['getSpinnerState']),
+  computed: mapGetters(['getSpinnerState', 'getModalState']),
 
   watch:{
     getSpinnerState: function(state){
-      debugger
+      this.showSpinner = state;
+    },
+
+    getModalState: function(modal){
+      this.showModal = modal.show;
+      this.modalRouteName = modal.route;
+      this.modalLabel = modal.label;
     }
   }
 }
@@ -64,6 +78,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.modal-container-app{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 200;
 }
 
 </style>
