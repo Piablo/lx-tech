@@ -15,6 +15,10 @@ const state = {
     lessonData: null,
     level0ParentId: null,
     activeIndexs: null,
+    loggedTask: {
+        label: null,
+        type: null,
+    }
 
 };
 
@@ -27,6 +31,15 @@ const getters = {
 };
 
 const actions = {
+    async populateGrid({commit}, gridName){
+        if(gridName === registry.TASK_GRID){
+            let payload = {
+                userId: 2,
+            }
+            const response = await axios.post('http://localhost:4000/api/get-open-tasks', payload);
+            debugger
+        }
+    },
     async getTreeviewDataFromDb({commit}, parentId){
         state.spinnerState = true;
         let payload = {
@@ -73,6 +86,13 @@ const actions = {
         const response = await axios.post('http://localhost:4000/api/get-menu-items', payload);
         let branchData = response.data;
         mutations.commitBranchData(state, branchData)
+    },
+    async saveLoggedTask(){
+        state.spinnerState = true;
+        let payload = state.loggedTask;
+        const response = await axios.post('http://localhost:4000/api/save-task', payload);
+        state.spinnerState = false;
+        mutations.toggleModal(state, false)
     }
 };
 
@@ -126,6 +146,20 @@ const mutations = {
             mutations.toggleModal(state, false)
             actions.saveNewLessonToDb();
         }
+        else if(controlName === registry.TASK_LOG){
+            let route = 'taskLog'
+            state.modal = registry.modalDisplay(route, 'Log a Task');
+        }
+        else if(controlName === registry.TASK_INFO){
+            state.loggedTask.label = userInput;
+        }
+        else if(controlName === registry.SAVE_TASK){
+            actions.saveLoggedTask();
+        }
+        
+        else if(controlName === registry.TASK_TYPE){
+            state.loggedTask.type = userInput.label;
+        }
     },
     commitTreeviewData(state, treeviewData){
         state.treeviewData = treeviewData
@@ -159,6 +193,11 @@ const mutations = {
             show: show,
         }
         state.modal = modal;
+    },
+    showModal(state, details){
+        let route = details.route;
+        let headline = details.headline;
+        state.modal = registry.modalDisplay(route, headline);
     },
     commitBranchData(state, branchData){
         let tempArray = state.courseData;

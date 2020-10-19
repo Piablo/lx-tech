@@ -21,7 +21,7 @@ app.use(cors());
 
 require('./routes')(app);
 
-sequelize.sync({ force: true })
+sequelize.sync()
 .then(() => {
     app.listen(process.env.API_PORT);
     console.log("Api server started on " + process.env.API_PORT);

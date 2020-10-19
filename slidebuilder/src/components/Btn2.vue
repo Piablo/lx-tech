@@ -57,8 +57,9 @@ export default {
   height: 35px;
   background-color: rgb(241, 89, 70);
   background-color: rgb(175, 203, 255);
+  background-color:#2E2E3A;
   border-radius: 10px;
-  color: rgb(42, 50, 75);
+  color:rgb(64, 201, 162);
   font-weight: bold;
   cursor: pointer;
   box-shadow: 1px 1px 2px rgba(0, 0, 0, .8);

@@ -2,7 +2,7 @@
 <div class="main-container-home">
   <div class="toolbar-home">
     <div class="round-btn-container-home">
-      <BtnRound>B</BtnRound>
+      <BtnRound :name="TASK_LOG">B</BtnRound>
     </div>
     <div class="round-btn-container-home"></div>
     <div class="logo-container-home center-middle"><span id="logo">LX</span> - tech</div>
@@ -38,7 +38,7 @@ import BtnRound from '@/components/BtnRound.vue';
 //import { bus }from '@/services/Bus';
 
 //Vuex
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 export default {
   props: [
@@ -54,11 +54,13 @@ export default {
   data(){
     return {
       COURSE_TREEVIEW: registry.COURSE_TREEVIEW,
+      TASK_LOG: registry.TASK_LOG,
     }
   },
 
   methods: {
-    ...mapActions(['getTreeviewDataFromDb'])
+    ...mapActions(['getTreeviewDataFromDb']),
+    ...mapMutations(['showModal']),
   },
 
   //computed: mapGetters(['getTreeviewData']),
@@ -66,6 +68,11 @@ export default {
   created(){
     let parentId = 0;
     this.getTreeviewDataFromDb(parentId); 
+    let details = {
+      route: 'taskList',
+      headline: 'Select the task you are working on'
+    }
+    this.showModal(details)
     // bus.$on("addFlashCardButtonComponent" + "onClick", (data) => {
     //   debugger;
     // })

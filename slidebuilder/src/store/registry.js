@@ -6,6 +6,8 @@ export default {
     INSERT_CARD: 'insert-card',
     SAVE_COURSE: 'save-course',
     SAVE_LESSON: 'save-lesson',
+    TASK_LOG: 'task-log',
+    SAVE_TASK: 'save-task',
 
     //Inputs
     START_TICK: 'start-tick',
@@ -13,8 +15,17 @@ export default {
     NEW_COURSE: 'new-course',
     NEW_LESSON: 'new-lesson',
 
+    //TextAreas
+    TASK_INFO: 'task-info',
+
+    //Selects
+    TASK_TYPE: 'task-type',
+
     //Treeviews
     COURSE_TREEVIEW: 'course_treeview',
+
+    //Grids
+    TASK_GRID: 'task-grid',
 
 
     //Models

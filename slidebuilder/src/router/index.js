@@ -3,6 +3,8 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import AddCourse from '../modals/AddCourse';
 import AddLesson from '../modals/AddLesson';
+import TaskLog from '../modals/TaskLog';
+import TaskList from '../modals/TaskList';
 
 Vue.use(VueRouter)
 
@@ -14,6 +16,8 @@ const routes = [
       default: Home,
       addCourse: AddCourse,
       addLesson: AddLesson,
+      taskLog: TaskLog,
+      taskList: TaskList,
     }
   },
   {
