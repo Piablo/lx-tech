@@ -3,6 +3,7 @@ import axios from 'axios';
 //Services
 // import { bus }from '@/services/Bus';
 import registry from '../registry';
+import sharedFunctions from '../../services/sharedFunctions.js';
 
 const state = {
     spinnerState: false,
@@ -104,7 +105,7 @@ const actions = {
         }
         const response = await axios.post('http://localhost:4000/api/get-menu-items', payload);
         let treeviewData = response.data;
-        state.courseData = response.data;
+        state.courseData = sharedFunctions.decoupleObjectList(response.data);
         commit('commitTreeviewData', treeviewData);
         state.spinnerState = false;
     },
@@ -247,6 +248,8 @@ const mutations = {
         state.treeviewData = treeviewData
         let index = 0;
         state.treeviewData.push(registry.createButton(index))
+        let temp = state;
+        
     },
     onTreeviewClick(state, payload){
         let label = payload.selection.label;
@@ -290,11 +293,12 @@ const mutations = {
 
         for(let i = 0; i < listLength; i++){
             spliceIndex += i;
-            tempArray.splice(spliceIndex, 0, branchData);
+            tempArray.splice(spliceIndex, 0, branchData[i]);
 
         }
         let index = 1;
-        tempArray.splice(spliceIndex, 0, registry.createButton(index))
+        tempArray.splice(spliceIndex + 1, 0, registry.createButton(index))
+        tempArray.push(registry.createButton(0));
         state.treeviewData = tempArray;
         state.spinnerState = false;
     },
