@@ -20,7 +20,7 @@
 // import HelloWorld from '@/components/HelloWorld.vue'
 
 //Services
-//import { bus }from '@/services/Bus';
+import { bus }from '@/services/Bus';
 
 //Vuex
 import { mapMutations } from 'vuex';
@@ -34,7 +34,8 @@ export default {
   props: [
     'placeholder',
     'options',
-    'name'
+    'name',
+    'index'
   ],
   components: {
     // HelloWorld
@@ -44,13 +45,15 @@ export default {
       showOptions: false,
       errorMessage: null,
       userInput: null,
+      globalClickBlocked: false,
     }
   },
 
   methods: {
     ...mapMutations(['commitToStateDispatcher']),
     toggleOptionsMenu(){
-      this.showOptions = !this.showOptions
+      this.showOptions = !this.showOptions;
+      this.globalClickBlocked = true;
     },
     selectedIndex(index){
       this.userInput = this.options[index].label;
@@ -58,7 +61,8 @@ export default {
 
       let payload = {
         controlName: this.name,
-        userInput: this.options[index]
+        userInput: this.options[index],
+        index: this.index
       }
       this.commitToStateDispatcher(payload);
     }
@@ -67,9 +71,13 @@ export default {
   //computed: mapGetters(['allTodos']),
 
   created(){
-    // bus.$on("addFlashCardButtonComponent" + "onClick", (data) => {
-    //   debugger;
-    // })
+    bus.$on("globalClick", (data) => {
+      if(this.globalClickBlocked){
+        this.globalClickBlocked = false;
+      }else{
+        this.showOptions = false;
+      };
+    })
   }
 }
 </script>

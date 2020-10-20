@@ -2,9 +2,10 @@
 <div class="main-container-home">
   <div class="toolbar-home">
     <div class="round-btn-container-home">
-      <BtnRound :name="TASK_LOG">B</BtnRound>
+      <BtnRound :name="TASK_LOG">T</BtnRound>
     </div>
     <div class="round-btn-container-home"></div>
+    <div class="current-task-container-home center-middle" v-if="showTaskNumber">Current task - <span  @click="showTasklistModal" class="ticket-number-home"> {{taskId}}</span></div>
     <div class="logo-container-home center-middle"><span id="logo">LX</span> - tech</div>
   </div>
   <div class="treeview-container-home">
@@ -35,7 +36,7 @@ import registry from '../store/registry';
 import BtnRound from '@/components/BtnRound.vue';
 
 //Services
-//import { bus }from '@/services/Bus';
+// import { bus }from '@/services/Bus';
 
 //Vuex
 import { mapActions, mapGetters, mapMutations } from 'vuex';
@@ -49,34 +50,51 @@ export default {
     Treeview,
     Player,
     Controls,
-    BtnRound
+    BtnRound,
+    
   },
   data(){
     return {
       COURSE_TREEVIEW: registry.COURSE_TREEVIEW,
       TASK_LOG: registry.TASK_LOG,
+      showTaskNumber: false,
+      taskId: null,
     }
   },
 
   methods: {
     ...mapActions(['getTreeviewDataFromDb']),
     ...mapMutations(['showModal']),
+
+    showTasklistModal(){
+      let details = {
+          route: 'taskList',
+          headline: 'Select the task you are working on'
+        }
+      this.showModal(details)
+    }
   },
 
-  //computed: mapGetters(['getTreeviewData']),
+  computed: mapGetters(['getCurrentTask', 'getShowTaskModal']),
 
   created(){
     let parentId = 0;
     this.getTreeviewDataFromDb(parentId); 
-    let details = {
-      route: 'taskList',
-      headline: 'Select the task you are working on'
-    }
-    this.showModal(details)
-    // bus.$on("addFlashCardButtonComponent" + "onClick", (data) => {
-    //   debugger;
-    // })
+    
   },
+
+  watch:{
+    getCurrentTask: function(current){
+      this.taskId = current.ticketNumber;
+      this.showTaskNumber = true;
+    },
+
+    getShowTaskModal: function(state){
+      if(state){
+        this.showTasklistModal();
+      }
+    }
+  }
   
 }
 </script>
@@ -127,14 +145,30 @@ export default {
 .logo-container-home{
   position: absolute;
   right: 10px;
-  width: 300px;
+  width: 150px;
   height: 30px;
   color: rgb(241, 89, 70);
   color: rgb(241, 89, 70);
   color: rgb(241, 89, 70);
+  border-radius: 15px;
+  
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
   font-weight: bold;
+}
+.current-task-container-home{
+  position: absolute;
+  right: 170px;
+  width: 250px;
+  height: 30px;
+  color: rgb(200,200,200);
+  font-size: 13px;
 }
 #logo{
   font-size: 25px;
+}
+.ticket-number-home{
+  color: rgb(64, 201, 162);
+  font-size: 18px;
+  cursor: pointer;
 }
 </style>

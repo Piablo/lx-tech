@@ -8,6 +8,7 @@ export default {
     SAVE_LESSON: 'save-lesson',
     TASK_LOG: 'task-log',
     SAVE_TASK: 'save-task',
+    STILL_WORKING: 'still-working',
 
     //Inputs
     START_TICK: 'start-tick',
@@ -20,6 +21,7 @@ export default {
 
     //Selects
     TASK_TYPE: 'task-type',
+    TASK_STATUS: 'task-status',
 
     //Treeviews
     COURSE_TREEVIEW: 'course_treeview',

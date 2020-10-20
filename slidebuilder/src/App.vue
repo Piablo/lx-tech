@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app" @click="globalClick">
     <div v-if="showSpinner"><Spinner></Spinner></div>
-    <div class="modal-container-app" v-if="showModal">
+    <div class="modal-container-app" v-if="showModalDiv">
       <Modal :routerView="modalRouteName" :label="modalLabel"></Modal>
     </div>
     <router-view/>
@@ -14,10 +14,10 @@ import Spinner from './components/Spinner.vue';
 import Modal from './components/Modal.vue';
 
 //Services
-//import { bus }from '@/services/Bus';
+import { bus }from '@/services/Bus';
 
 //Vuex
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions, mapMutations} from 'vuex';
 
 export default {
   props: [
@@ -30,15 +30,65 @@ export default {
   data(){
     return {
       showSpinner: false,
-      showModal: false,
+      showModalDiv: false,
       modalRouteName: null,
       modalLabel: null,
+      timer: null,
+      clock: 0,
+      minsInactive: 0,
+      pauseAfterMins: 10
     }
   },
   created(){
+    
     this.showSpinner = this.getSpinnerState;
+    this.checkForActiveTask();
   },
-  computed: mapGetters(['getSpinnerState', 'getModalState']),
+  mounted(){
+    this.startActivityTimer();
+
+  },
+  computed: mapGetters(['getSpinnerState', 'getModalState','getStartActivityTimerState']), 
+
+  methods:{
+    ...mapActions(['checkForActiveTask']),
+    ...mapMutations(['showModal']),
+    globalClick(){
+      bus.$emit('globalClick', true);
+      this.minsInactive = 0;
+      this.clock = 0;
+    },
+
+    startActivityTimer(){
+
+      this.clock = 0;
+      this.minsInactive = 0;
+      
+      this.timer = setInterval(function(){  
+
+        console.log(this.clock);
+        console.log(this.minsInactive);
+        if(this.clock === 60){
+          this.minsInactive += 1;
+          this.clock = 0
+        }
+        if(this.minsInactive === this.pauseAfterMins){ 
+          debugger 
+          let payload = {
+            route: 'workPaused',
+            headline: 'You forgot to logout.'
+          }
+          this.showModal(payload);
+          clearTimeout(this.timer);
+        }
+        this.clock += 1;
+
+      }.bind(this), 1000)
+    }
+  },
+  destroyed(){
+    clearTimeout(this.timer)
+  },
 
   watch:{
     getSpinnerState: function(state){
@@ -46,9 +96,14 @@ export default {
     },
 
     getModalState: function(modal){
-      this.showModal = modal.show;
+      this.showModalDiv = modal.show;
       this.modalRouteName = modal.route;
       this.modalLabel = modal.label;
+    },
+    getStartActivityTimerState: function(state){
+      if(state){
+        this.startActivityTimer();
+      }
     }
   }
 }

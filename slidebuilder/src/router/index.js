@@ -5,6 +5,7 @@ import AddCourse from '../modals/AddCourse';
 import AddLesson from '../modals/AddLesson';
 import TaskLog from '../modals/TaskLog';
 import TaskList from '../modals/TaskList';
+import WorkPaused from '../modals/WorkPaused';
 
 Vue.use(VueRouter)
 
@@ -18,6 +19,7 @@ const routes = [
       addLesson: AddLesson,
       taskLog: TaskLog,
       taskList: TaskList,
+      workPaused: WorkPaused
     }
   },
   {

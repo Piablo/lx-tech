@@ -18,7 +18,12 @@ const state = {
     loggedTask: {
         label: null,
         type: null,
-    }
+    },
+    gridData: null,
+    openTasks: null,
+    currentTask: null,
+    showTaskModal: false,
+    startActivityTimerState: false
 
 };
 
@@ -28,16 +33,67 @@ const getters = {
     getTreeviewData: (state) => state.treeviewData,
     getModalState: (state) => state.modal,
     getLessonData: (state) => state.lessonData,
+    getGridData: (state) => state.gridData,
+    getCurrentTask: (state) => state.currentTask,
+    getShowTaskModal: (state) => state.showTaskModal,
+    getStartActivityTimerState: (state) => state.startActivityTimerState,
 };
 
 const actions = {
+
+    async pauseActiveTask({commit}){
+        let payload = {
+            userId: 2
+        }
+        const response = await axios.post('http://localhost:4000/api/pause-active-task', payload);
+        let details = {
+            route: 'taskList',
+            headline: 'Select the task you are working on'
+          }
+        commit('showModal', details);
+    },
+
+    async checkForActiveTask({commit}){
+        
+        let payload = {
+            userId: 3
+        }
+        const response = await axios.post('http://localhost:4000/api/get-active-task', payload);
+        const activeTask = response.data;
+        if(activeTask === ""){
+            state.showTaskModal = true;
+        }else{
+            state.currentTask = activeTask
+        }
+    },
+
     async populateGrid({commit}, gridName){
         if(gridName === registry.TASK_GRID){
             let payload = {
                 userId: 2,
             }
             const response = await axios.post('http://localhost:4000/api/get-open-tasks', payload);
-            debugger
+
+            let properties = response.data;
+            let data = [];
+            let listLength = properties.length;
+            for(let i = 0; i < listLength; i++){
+                let columnData = [
+                    properties[i].ticketNumber,
+                    properties[i].label,
+                    properties[i].status,
+                    properties[i].type,
+                
+                ];
+                data.push(columnData);
+                //Add a session option to show how many sessions it took to work on a task or subtask
+            }
+
+            let gridData = {};
+            gridData.data = data;
+            gridData.name = gridName;
+            state.gridData = gridData;
+            state.openTasks = properties;
         }
     },
     async getTreeviewDataFromDb({commit}, parentId){
@@ -52,7 +108,6 @@ const actions = {
         commit('commitTreeviewData', treeviewData);
         state.spinnerState = false;
     },
-
     async saveNewCourseToDb(){
         state.spinnerState = true;
         let payload = {
@@ -76,7 +131,6 @@ const actions = {
         mutations.commitTreeviewData(state, treeviewData);
         state.spinnerState = false;
     },
-
     async getBranchData(parentId){
         state.spinnerState = true;
         let payload = {
@@ -93,6 +147,13 @@ const actions = {
         const response = await axios.post('http://localhost:4000/api/save-task', payload);
         state.spinnerState = false;
         mutations.toggleModal(state, false)
+    },
+    async updateLoggedTask(task){
+        state.spinnerState = true;
+        const response = await axios.post('http://localhost:4000/api/update-task', task);
+        state.currentTask = response.data;
+        mutations.toggleModal(state, false)
+        state.spinnerState = false;
     }
 };
 
@@ -156,9 +217,30 @@ const mutations = {
         else if(controlName === registry.SAVE_TASK){
             actions.saveLoggedTask();
         }
-        
         else if(controlName === registry.TASK_TYPE){
             state.loggedTask.type = userInput.label;
+        }
+        else if(controlName === registry.TASK_GRID){
+            state.openTasks[payload.columnIndex].instruction = 'active'
+            let task = state.openTasks[payload.columnIndex];
+            actions.updateLoggedTask(task);
+        }
+        else if(controlName === registry.TASK_STATUS){
+            let instruction = null;
+            let index = payload.index;
+
+            if(userInput.label === "pause"){
+                instruction = "paused";
+            }else if(userInput.label === "close"){
+                instruction = "closed";
+            }
+            let updateTask = state.openTasks[index]
+            updateTask.instruction = instruction;
+            actions.updateLoggedTask(updateTask);
+        }
+        else if(controlName === registry.STILL_WORKING){
+            mutations.toggleModal(state, false)
+            state.startActivityTimerState = true;
         }
     },
     commitTreeviewData(state, treeviewData){
@@ -166,7 +248,6 @@ const mutations = {
         let index = 0;
         state.treeviewData.push(registry.createButton(index))
     },
-
     onTreeviewClick(state, payload){
         let label = payload.selection.label;
         let level = payload.selection.level;

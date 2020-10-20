@@ -1,5 +1,5 @@
 <template>
-<div class="main-container-btnRound center-middle" @click="btnRoundClick">
+<div class="main-container-btnRound center-middle" @click="btnRoundClick" ref="mainContainerBtnRound">
   <slot></slot>
 </div>
 </template>
@@ -22,7 +22,8 @@ import { mapMutations } from 'vuex';
 export default {
   props: [
     'name',
-    'index'
+    'index',
+    'colors'
   ],
   components: {
     // HelloWorld
@@ -40,15 +41,25 @@ export default {
         index: this.index
       }
       this.commitToStateDispatcher(payload);
+    },
+
+    styleButton(){
+      let backgroundColor = this.colors.backgroundColor;
+      let color = this.colors.color;
+
+      this.$refs.mainContainerBtnRound.style.backgroundColor = backgroundColor;
+      this.$refs.mainContainerBtnRound.style.color = color;
     }
   },
 
   //computed: mapGetters(['allTodos']),
 
   created(){
-    // bus.$on("addFlashCardButtonComponent" + "onClick", (data) => {
-    //   debugger;
-    // })
+  },
+  mounted(){
+    if(this.colors !== undefined){
+      this.styleButton();
+    };
   }
 }
 </script>

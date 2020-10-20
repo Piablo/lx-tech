@@ -23,16 +23,13 @@ module.exports = (sequelize, DataTypes) =>
         dateTimeStarted:{
             type: DataTypes.STRING,
         },
-        dateTimePaused:{
-            type: DataTypes.TEXT,
-        },
         dateTimeComplete:{
             type: DataTypes.STRING,
         },
         ticketNumber:{
             type: DataTypes.STRING,
         },
-        stats:{
+        logs:{
             type: DataTypes.TEXT,
         },
 
