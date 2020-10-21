@@ -7,7 +7,7 @@ import sharedFunctions from '../../services/sharedFunctions.js';
 
 const state = {
     spinnerState: false,
-    cards: [],
+    slides: [],
     treeviewData: [],
     modal: null,
     newCourse: null,
@@ -26,12 +26,13 @@ const state = {
     showTaskModal: false,
     startActivityTimerState: false,
     controlPanelState: false,
+    selectedLessonId: null
 
 };
 
 const getters = {
     getSpinnerState: (state) => state.spinnerState,
-    getCards: (state) => state.cards,
+    getSlides: (state) => state.slides,
     getTreeviewData: (state) => state.treeviewData,
     getModalState: (state) => state.modal,
     getLessonData: (state) => state.lessonData,
@@ -164,7 +165,18 @@ const actions = {
             userId: 3
         }
         const response = await axios.post('http://localhost:4000/api/get-slides', payload);
+
+        state.slides = response.data;
+        state.selectedLessonId = parentId;
         state.controlPanelState = true;
+    },
+    async saveSlides(){
+        let payload = {
+            userId: 3,
+            slides: state.slides
+        }
+        const response = await axios.post('http://localhost:4000/api/save-slides', payload);
+        debugger
     }
 };
 
@@ -177,11 +189,12 @@ const mutations = {
         let index = payload.index;
 
         if(controlName === registry.INSERT_CARD){
-            let card = registry.insertBlackCard();
-            state.cards.splice(index, 0, card);
+            let parentId = state.selectedLessonId;
+            let card = registry.insertBlankSlide(parentId);
+            state.slides.splice(index, 0, card);
         }
         else if(controlName === registry.DELETE_CARD){
-            state.cards.splice(index, 1);
+            state.slides.splice(index, 1);
         }
     },
     commitToStateDispatcher(state, payload){
@@ -189,12 +202,33 @@ const mutations = {
         let parentIndex = payload.parentIndex;
         let userInput = payload.userInput;
 
+
+        //////////////////////////////////////////////////////SLIDE_DATA//////////////////////////
         if(controlName === registry.START_TICK){
-            state.cards[parentIndex].timing.startTick = parseInt(userInput);
+            state.slides[parentIndex].timing.startTick = parseInt(userInput);
         }
         else if(controlName === registry.END_TICK){
-            state.cards[parentIndex].timing.endTick = parseInt(userInput);
+            state.slides[parentIndex].timing.endTick = parseInt(userInput);
         }
+        else if(controlName === registry.SAVE_SLIDES){
+            actions.saveSlides();
+        }
+
+
+
+
+ 
+        //////////////////////////////////////////////////////SLIDE_DATA//////////////////////////
+
+
+
+
+
+
+
+
+
+
         else if(controlName === registry.NEW_COURSE){
             let label = userInput;
             let level = 0;

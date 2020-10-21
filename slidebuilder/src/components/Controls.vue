@@ -1,8 +1,8 @@
 <template>
   <div class="main-container-controls" v-if="showSlides">
-    <Btn2>Save</Btn2>
+    <Btn2 :name="SAVE_SLIDES">Save</Btn2>
     <div class="spacer"></div>
-    <div v-for="(card, index) in cards" :key="index">
+    <div v-for="(slide, index) in slides" :key="index">
       <PanelComponent>
         <template v-slot:header>
           <div class="toolbar-panel-controls center-middle">
@@ -16,7 +16,7 @@
           </div>
         </template>
         <template v-slot:content>
-          <CardEditor :index="index"></CardEditor>
+          <SlideEditor :index="index" :data="slide"></SlideEditor>
         </template>
       </PanelComponent>
 
@@ -32,7 +32,7 @@
 import PanelComponent from '@/components/PanelComponent.vue';
 import Icon from '@/components/Icon.vue';
 import registry from '../store/registry';
-import CardEditor from '@/components/CardEditor.vue';;
+import SlideEditor from '@/components/SlideEditor.vue';;
 import { mapMutations, mapGetters } from 'vuex';
 import Btn2 from '@/components/Btn2.vue';
 
@@ -47,14 +47,14 @@ export default {
   components: {
     PanelComponent,
     Icon,
-    CardEditor,
+    SlideEditor,
     Btn2
   },
   data(){
     return {
-      cards: [],
+      slides: [],
       showSlides: false,
-      
+      SAVE_SLIDES: registry.SAVE_SLIDES,
     }
   },
 
@@ -70,7 +70,7 @@ export default {
 
     insertAt(index){
       if(index === 'end'){
-        index = this.cards.length;
+        index = this.slides.length;
       }
       let payload = {
         controlName: registry.INSERT_CARD,
@@ -80,17 +80,18 @@ export default {
     }
   },
 
-  computed: mapGetters(['getCards', 'getControlPanelState']),
+  computed: mapGetters(['getSlides', 'getControlPanelState']),
 
   created(){
-    this.cards = this.getCards;
+    //this.slides = this.getSlides;
+    //debugger
     // bus.$on("addFlashCardButtonComponent" + "onClick", (data) => {
     //   debugger;
     // })
   },
   watch: {
-    getCards: function(cards){
-      this.cards = cards;
+    getSlides: function(slides){
+      this.slides = slides;
     },
     getControlPanelState: function(state){
       this.showSlides = state;

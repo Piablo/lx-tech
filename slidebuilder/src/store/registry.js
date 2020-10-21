@@ -10,6 +10,8 @@ export default {
     SAVE_TASK: 'save-task',
     STILL_WORKING: 'still-working',
 
+    SAVE_SLIDES: 'save-slides',
+
     //Inputs
     START_TICK: 'start-tick',
     END_TICK: 'end-tick',
@@ -31,15 +33,16 @@ export default {
 
 
     //Models
-    insertBlackCard(){
-        let card = {
+    insertBlankSlide(parentId){
+        let slide = {
+            parentId, parentId,
             timing: {
                 startTick: null,
                 endTick: null
             }
             
         }
-        return card;
+        return slide;
     },
 
     treeviewItem(label, level, parentId, order){

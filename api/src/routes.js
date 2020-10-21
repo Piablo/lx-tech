@@ -7,6 +7,7 @@ const UpdateTask = require('./controllers/UpdateTask');
 const GetActiveTask = require('./controllers/GetActiveTask');
 const PauseActiveTask = require('./controllers/PauseActiveTask');
 const GetSlides = require('./controllers/GetSlides');
+const SaveSlides = require('./controllers/SaveSlides');
 
 module.exports = (app) => {
 
@@ -19,4 +20,5 @@ module.exports = (app) => {
     app.post('/api/get-active-task', GetActiveTask.model);
     app.post('/api/pause-active-task', PauseActiveTask.model);
     app.post('/api/get-slides', GetSlides.model);
+    app.post('/api/save-slides', SaveSlides.model);
 }

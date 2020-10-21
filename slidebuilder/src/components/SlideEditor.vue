@@ -2,8 +2,8 @@
   <div>
     <ExpandablePanel title="Timing">
       <template v-slot:content>
-        <InputComponent placeholder="Start Tick" :name="START_TICK" :parentIndex="index"></InputComponent>
-        <InputComponent placeholder="End Tick" :name="END_TICK" :parentIndex="index"></InputComponent>
+        <InputComponent placeholder="Start Tick" :name="START_TICK" :parentIndex="index" :input="startTickData"></InputComponent>
+        <InputComponent placeholder="End Tick" :name="END_TICK" :parentIndex="index" :input="endTickData"></InputComponent>
       </template>
     </ExpandablePanel>
     <div class="spacer"></div>
@@ -11,6 +11,7 @@
     <div class="spacer"></div>
     <ExpandablePanel title="Timing"></ExpandablePanel>
     <div class="spacer"></div>
+    
   </div>
 </template>
 
@@ -24,20 +25,25 @@ import registry from '../store/registry.js';
 //import { bus }from '@/services/Bus';
 
 //Vuex
-//import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   props: [
-    'index'
+    'index',
+    'data'
   ],
   components: {
     ExpandablePanel,
-    InputComponent
+    InputComponent,
+
   },
   data(){
     return {
       START_TICK: registry.START_TICK,
-      END_TICK: registry.END_TICK
+      END_TICK: registry.END_TICK,
+
+      startTickData: null,
+      endTickData: null,
     }
   },
 
@@ -48,6 +54,8 @@ export default {
   //computed: mapGetters(['allTodos']),
 
   created(){
+    this.startTickData = this.data.timing.startTick;
+    this.endTickData = this.data.timing.endTick;
     // bus.$on("addFlashCardButtonComponent" + "onClick", (data) => {
     //   debugger;
     // })

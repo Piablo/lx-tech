@@ -27,7 +27,8 @@ export default {
     'errorMessage',
     'type',
     'parentIndex',
-    'name'
+    'name',
+    'input'
   ],
   components: {
     // HelloWorld
@@ -56,6 +57,7 @@ export default {
     // bus.$on("addFlashCardButtonComponent" + "onClick", (data) => {
     //   debugger;
     // })
+    this.userInput = this.input;
   }
 }
 </script>

@@ -1,4 +1,5 @@
 const {Slide} = require('../models');
+const globalFunctions = require('../services/globalFunctions.js');
 
 module.exports = {
     async model (req, res) {
@@ -7,13 +8,13 @@ module.exports = {
         console.log("Slides")
         console.log(parentId)
 
-        const response = await Slide.findAll({
+        let allLessonSlides = await Slide.findAll({
             where: {
                 parentId: parentId
             }
         })
-        console.log(response)
-        console.log("Slides")
+
+        let response = globalFunctions.sanitizeSlidesForClient(allLessonSlides);
         res.send(response);
     }
 }
