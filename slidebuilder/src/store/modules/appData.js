@@ -24,7 +24,8 @@ const state = {
     openTasks: null,
     currentTask: null,
     showTaskModal: false,
-    startActivityTimerState: false
+    startActivityTimerState: false,
+    controlPanelState: false,
 
 };
 
@@ -38,6 +39,7 @@ const getters = {
     getCurrentTask: (state) => state.currentTask,
     getShowTaskModal: (state) => state.showTaskModal,
     getStartActivityTimerState: (state) => state.startActivityTimerState,
+    getControlPanelState: (state) => state.controlPanelState,
 };
 
 const actions = {
@@ -155,6 +157,14 @@ const actions = {
         state.currentTask = response.data;
         mutations.toggleModal(state, false)
         state.spinnerState = false;
+    },
+    async getSlideData(parentId){
+        let payload = {
+            parentId: parentId,
+            userId: 3
+        }
+        const response = await axios.post('http://localhost:4000/api/get-slides', payload);
+        state.controlPanelState = true;
     }
 };
 
@@ -232,7 +242,8 @@ const mutations = {
 
             if(userInput.label === "pause"){
                 instruction = "paused";
-            }else if(userInput.label === "close"){
+            }
+            else if(userInput.label === "close"){
                 instruction = "closed";
             }
             let updateTask = state.openTasks[index]
@@ -269,7 +280,12 @@ const mutations = {
             let parentId = payload.selection.id;
             state.level0ParentId = parentId
             mutations.commitActiveIndexs(level, index);
-            actions.getBranchData(parentId);
+            if(level === 0){
+                actions.getBranchData(parentId);
+            }else if(level === 1){
+                actions.getSlideData(parentId);
+            }
+            
         }
     },
     toggleModal(state, show){
@@ -305,7 +321,10 @@ const mutations = {
     commitActiveIndexs(level, index){
         let tempArray = [];
         if(level === 0){
-            tempArray.push(index)
+            tempArray.push(index);
+        }else if(level === 1){
+            tempArray.push(state.activeIndexs[0]);
+            tempArray.push(index);
         }
         state.activeIndexs = tempArray;
     }

@@ -1,5 +1,5 @@
 <template>
-  <div class="main-container-controls">
+  <div class="main-container-controls" v-if="showSlides">
     <Btn2>Save</Btn2>
     <div class="spacer"></div>
     <div v-for="(card, index) in cards" :key="index">
@@ -52,7 +52,8 @@ export default {
   },
   data(){
     return {
-      cards: []
+      cards: [],
+      showSlides: false,
       
     }
   },
@@ -79,7 +80,7 @@ export default {
     }
   },
 
-  computed: mapGetters(['getCards']),
+  computed: mapGetters(['getCards', 'getControlPanelState']),
 
   created(){
     this.cards = this.getCards;
@@ -90,6 +91,9 @@ export default {
   watch: {
     getCards: function(cards){
       this.cards = cards;
+    },
+    getControlPanelState: function(state){
+      this.showSlides = state;
     }
   }
 }
