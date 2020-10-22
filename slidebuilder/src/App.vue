@@ -40,23 +40,31 @@ export default {
     }
   },
   created(){
+
     
     this.showSpinner = this.getSpinnerState;
-    this.checkForActiveTask();
+    this.getUserDetailsOnLoad()
+
   },
   mounted(){
-    this.startActivityTimer();
+    //this.setUserDetailsOnLoad();
 
   },
-  computed: mapGetters(['getSpinnerState', 'getModalState','getStartActivityTimerState']), 
+  computed: mapGetters(['getSpinnerState', 'getModalState','getStartActivityTimerState', 'getUserDetails']), 
 
   methods:{
-    ...mapActions(['checkForActiveTask']),
+    ...mapActions(['checkForActiveTask', 'setUserDetailsOnLoad']),
     ...mapMutations(['showModal']),
     globalClick(){
       bus.$emit('globalClick', true);
       this.minsInactive = 0;
       this.clock = 0;
+    },
+
+    getUserDetailsOnLoad(){
+      var params = location.href.split('?')[1].split('#');
+      let userId = parseInt(params[0]);
+      this.setUserDetailsOnLoad(userId);
     },
 
     startActivityTimer(){
@@ -104,6 +112,9 @@ export default {
       if(state){
         this.startActivityTimer();
       }
+    },
+    getUserDetails: function(userDetails){
+      this.checkForActiveTask();
     }
   }
 }

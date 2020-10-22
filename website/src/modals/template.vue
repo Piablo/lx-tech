@@ -1,7 +1,5 @@
 <template>
-<div class="main-container-dashboard">
-  <iframe :src="link" class="main-container-dashboard"></iframe>
-</div>
+<div>template</div>
 </template>
 
 <script>
@@ -23,7 +21,6 @@ export default {
   },
   data(){
     return {
-      link: null,
     }
   },
 
@@ -34,21 +31,12 @@ export default {
   //computed: mapGetters(['allTodos']),
 
   created(){
-    let userDetails = JSON.parse(window.localStorage.getItem('userDetails'));
-    let userId = userDetails.id;
-    this.link = 'http://localhost:8081?' + userId;
     // bus.$on("addFlashCardButtonComponent" + "onClick", (data) => {
     //   debugger;
     // })
-  
   }
 }
 </script>
 
 <style scoped>
-.main-container-dashboard{
-  width: 100%;
-  height: 100vh;
-  border: none;
-}
 </style>

@@ -1,11 +1,11 @@
 <template>
   <div class="main-container-home">
     <div class="toolbar-container-home">
-      <div class="button-wrapper-home" @click="login">
-        <Btn1>Login</Btn1>
+      <div class="button-wrapper-home">
+        <Btn1 :name="LOGIN_USER">Login</Btn1>
       </div>
       <div class="button-wrapper-home">
-        <Btn1>Sign up</Btn1>
+        <Btn1 :name="REGISTER_USER">Sign up</Btn1>
       </div>
     </div>
   </div>
@@ -17,9 +17,10 @@ import Btn1 from '@/components/Btn1.vue'
 
 //Services
 //import { bus }from '@/services/Bus';
+import registry from '../store/registry.js';
 
 //Vuex
-//import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 
 export default {
   props: [
@@ -30,22 +31,26 @@ export default {
   },
   data(){
     return {
+      LOGIN_USER: registry.LOGIN_USER,
+      REGISTER_USER: registry.REGISTER_USER,
     }
   },
 
   methods: {
     //...mapActions(['fetchTodos'])
-    login(){
-      this.$router.push('/dashboard')
-    }
   },
 
-  //computed: mapGetters(['allTodos']),
+  computed: mapGetters(['getRoute']),
 
   created(){
     // bus.$on("addFlashCardButtonComponent" + "onClick", (data) => {
     //   debugger;
     // })
+  },
+  watch:{
+    getRoute: function(route){
+      this.$router.push(route)
+    }
   }
 }
 </script>

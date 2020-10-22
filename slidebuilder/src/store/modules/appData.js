@@ -5,6 +5,19 @@ import axios from 'axios';
 import registry from '../registry';
 import sharedFunctions from '../../services/sharedFunctions.js';
 
+function getIP(userDeviceData){
+    
+    let string = userDeviceData.data;
+    let startIndex = string.search('ip=');
+    let endIndex = string.search('ts=');
+    let ip = string.slice(startIndex + 3, endIndex);
+    if(ip[ip.length - 1] === "\n"){
+        ip = ip.substring(0, ip.length-1);
+    }
+    return ip;
+}
+
+
 const state = {
     spinnerState: false,
     slides: [],
@@ -26,7 +39,8 @@ const state = {
     showTaskModal: false,
     startActivityTimerState: false,
     controlPanelState: false,
-    selectedLessonId: null
+    selectedLessonId: null,
+    userDetails: null
 
 };
 
@@ -41,13 +55,14 @@ const getters = {
     getShowTaskModal: (state) => state.showTaskModal,
     getStartActivityTimerState: (state) => state.startActivityTimerState,
     getControlPanelState: (state) => state.controlPanelState,
+    getUserDetails: (state) => state.userDetails,
 };
 
 const actions = {
 
     async pauseActiveTask({commit}){
         let payload = {
-            userId: 2
+            userDetails: state.userDetails
         }
         const response = await axios.post('http://localhost:4000/api/pause-active-task', payload);
         let details = {
@@ -56,12 +71,13 @@ const actions = {
           }
         commit('showModal', details);
     },
-
     async checkForActiveTask({commit}){
         
         let payload = {
-            userId: 3
+            userDetails: state.userDetails
         }
+        console.log("Yo");
+        console.log(state)
         const response = await axios.post('http://localhost:4000/api/get-active-task', payload);
         const activeTask = response.data;
         if(activeTask === ""){
@@ -70,11 +86,10 @@ const actions = {
             state.currentTask = activeTask
         }
     },
-
     async populateGrid({commit}, gridName){
         if(gridName === registry.TASK_GRID){
             let payload = {
-                userId: 2,
+                userDetails: state.userDetails
             }
             const response = await axios.post('http://localhost:4000/api/get-open-tasks', payload);
 
@@ -103,7 +118,7 @@ const actions = {
     async getTreeviewDataFromDb({commit}, parentId){
         state.spinnerState = true;
         let payload = {
-            userId: 2,
+            userDetails: state.userDetails,
             parentId: parentId
         }
         const response = await axios.post('http://localhost:4000/api/get-menu-items', payload);
@@ -116,7 +131,7 @@ const actions = {
         state.spinnerState = true;
         let payload = {
             course: state.newCourse,
-            userId: 23
+            userDetails: state.userDetails
         }
         const response = await axios.post('http://localhost:4000/api/save-course', payload);
         let treeviewData = response.data;
@@ -128,7 +143,7 @@ const actions = {
         let payload = {
             course: state.newLesson,
             spliceIndex: state.activeIndexs[0],
-            userId: 23
+            userDetails: state.userDetails
         }
         const response = await axios.post('http://localhost:4000/api/save-lesson', payload);
         let treeviewData = response.data;
@@ -139,7 +154,7 @@ const actions = {
         state.spinnerState = true;
         let payload = {
             parentId: parentId,
-            userId: 23
+            userDetails: state.userDetails
         }
         const response = await axios.post('http://localhost:4000/api/get-menu-items', payload);
         let branchData = response.data;
@@ -147,14 +162,21 @@ const actions = {
     },
     async saveLoggedTask(){
         state.spinnerState = true;
-        let payload = state.loggedTask;
+        let payload = {
+            loggedTask: state.loggedTask,
+            userDetails: state.userDetails
+        }
         const response = await axios.post('http://localhost:4000/api/save-task', payload);
         state.spinnerState = false;
         mutations.toggleModal(state, false)
     },
     async updateLoggedTask(task){
         state.spinnerState = true;
-        const response = await axios.post('http://localhost:4000/api/update-task', task);
+        let payload = {
+            userDetails: state.userDetails,
+            task: task
+        }
+        const response = await axios.post('http://localhost:4000/api/update-task', payload);
         state.currentTask = response.data;
         mutations.toggleModal(state, false)
         state.spinnerState = false;
@@ -162,7 +184,7 @@ const actions = {
     async getSlideData(parentId){
         let payload = {
             parentId: parentId,
-            userId: 3
+            userDetails: state.userDetails,
         }
         const response = await axios.post('http://localhost:4000/api/get-slides', payload);
 
@@ -172,11 +194,23 @@ const actions = {
     },
     async saveSlides(){
         let payload = {
-            userId: 3,
+            userDetails: state.userDetails,
             slides: state.slides
         }
         const response = await axios.post('http://localhost:4000/api/save-slides', payload);
         debugger
+    },
+    async setUserDetailsOnLoad({commit}, userId){
+        state.spinnerState = true;
+        const userDeviceData = await axios.get('https://www.cloudflare.com/cdn-cgi/trace');
+        let userDetails = {
+            ip: getIP(userDeviceData),
+            userId: userId
+        }
+        state.userDetails = userDetails;
+        const response = await axios.post('http://localhost:4000/api/authenticate-user', userDetails);
+        state.userDetails.email = response.data.email;
+        state.spinnerState = false;
     }
 };
 
@@ -361,7 +395,8 @@ const mutations = {
             tempArray.push(index);
         }
         state.activeIndexs = tempArray;
-    }
+    },
+   
 };
 
 export default {

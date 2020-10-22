@@ -109,6 +109,7 @@ export default {
   width: 900px;
   height: 500px;
   position: relative;
+  overflow: auto; 
 }
 .grid-container-taskList{
   width: calc(100% - 50px);

@@ -8,6 +8,9 @@ const GetActiveTask = require('./controllers/GetActiveTask');
 const PauseActiveTask = require('./controllers/PauseActiveTask');
 const GetSlides = require('./controllers/GetSlides');
 const SaveSlides = require('./controllers/SaveSlides');
+const RegisterUser = require('./controllers/RegisterUser');
+const LoginUser = require('./controllers/LoginUser');
+const AuthenticateUser = require('./controllers/AuthenticateUser');
 
 module.exports = (app) => {
 
@@ -21,4 +24,7 @@ module.exports = (app) => {
     app.post('/api/pause-active-task', PauseActiveTask.model);
     app.post('/api/get-slides', GetSlides.model);
     app.post('/api/save-slides', SaveSlides.model);
+    app.post('/api/register-user', RegisterUser.model);
+    app.post('/api/login-user', LoginUser.model);
+    app.post('/api/authenticate-user', AuthenticateUser.model);
 }

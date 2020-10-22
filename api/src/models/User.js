@@ -5,12 +5,6 @@ module.exports = (sequelize, DataTypes) =>
             autoIncrement: true,
             primaryKey: true,
         },
-        firstname: {
-            type: DataTypes.STRING,
-        },
-        lastname: {
-            type: DataTypes.STRING,
-        },
         email: {
             type: DataTypes.STRING,
         },
@@ -19,9 +13,6 @@ module.exports = (sequelize, DataTypes) =>
         },
         token: {
             type: DataTypes.TEXT,
-        },
-        authLevel: {
-            type: DataTypes.INTEGER,
         }
     },{
         timestamps: false,

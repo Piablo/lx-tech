@@ -1,5 +1,5 @@
 <template>
-<div class="main-container-btn1" @click="onClick">
+<div class="main-container-btn2 center-middle" @click="btn2Click">
   <slot></slot>
 </div>
 </template>
@@ -14,6 +14,11 @@
 //Vuex
 import { mapMutations } from 'vuex';
 
+//colors
+//Green = rgb(64, 201, 162);
+//BlueGreen = rgb(42, 50, 75);
+//Orange = rgb(241, 89, 70);
+
 export default {
   props: [
     'name'
@@ -23,17 +28,15 @@ export default {
   },
   data(){
     return {
-
     }
   },
 
   methods: {
     ...mapMutations(['dispatchToState']),
-
-    onClick(){
+    btn2Click(){
       let payload = {
-        controlType: 'button',
         controlName: this.name,
+        controlType: 'button'
       }
       this.dispatchToState(payload);
     }
@@ -50,17 +53,20 @@ export default {
 </script>
 
 <style scoped>
-.main-container-btn1{
+.main-container-btn2{
   width: 100%;
-  height: 3em;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: white;
+  height: 35px;
+  background-color: rgb(241, 89, 70);
+  background-color: rgb(175, 203, 255);
+  background-color:#2E2E3A;
+  border-radius: 10px;
+  color:rgb(64, 201, 162);
+  font-weight: bold;
   cursor: pointer;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, .8);
 }
-.main-container-btn1:hover{
+.main-container-btn2:hover{
   transition: .3s;
-  color: rgb(45,45,45);
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 1);
 }
 </style>

@@ -75,15 +75,18 @@ export default {
     }
   },
 
-  computed: mapGetters(['getCurrentTask', 'getShowTaskModal']),
+  computed: mapGetters(['getCurrentTask', 'getShowTaskModal', 'getUserDetails']),
 
   created(){
     let parentId = 0;
-    this.getTreeviewDataFromDb(parentId); 
+    //this.getTreeviewDataFromDb(parentId); 
     
   },
 
   watch:{
+    getUserDetails: function(current){
+
+    },
     getCurrentTask: function(current){
       this.taskId = current.ticketNumber;
       this.showTaskNumber = true;
@@ -94,6 +97,7 @@ export default {
         this.showTasklistModal();
       }
     }
+
   }
   
 }

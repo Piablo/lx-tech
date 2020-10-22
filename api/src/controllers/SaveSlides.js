@@ -4,22 +4,28 @@ const globalFunctions = require('../services/globalFunctions.js');
 module.exports = {
     async model (req, res) {
 
-       console.log(req.body);
-       let slides = req.body.slides;
-       const parentId = slides[0].parentId;
+        const user = req.body.userDetails
 
-       slides = globalFunctions.sanitizeSlidesForDB(slides);
+        const userAuthenticated = await globalFunctions.authenticateUser(user);
+        if(userAuthenticated){
+            console.log('SaveSlides')
+            let slides = req.body.slides;
+            const parentId = slides[0].parentId;
+     
+            slides = globalFunctions.sanitizeSlidesForDB(slides);
+     
+            await Slide.bulkCreate(slides, {updateOnDuplicate: ["timing"] });
+     
+            const allLessonSlides = await Slide.findAll({
+                where:{
+                 parentId: parentId
+                }
+            })
+     
+            let response = globalFunctions.sanitizeSlidesForClient(allLessonSlides);
+            res.send(response);
+        }
 
-       await Slide.bulkCreate(slides, {updateOnDuplicate: ["timing"] });
-
-       const allLessonSlides = await Slide.findAll({
-           where:{
-            parentId: parentId
-           }
-       })
-
-       let response = globalFunctions.sanitizeSlidesForClient(allLessonSlides);
-       res.send(response);
     }
 }
 
