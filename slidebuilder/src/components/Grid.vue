@@ -72,7 +72,7 @@ export default {
       if(this.name = payload.name){
         let data = payload.data;
         this.rowCount = data.length;
-        this.columnCount += data[0].length;
+        this.columnCount = data[0].length;
         let columnWidthAsPercentage = (100 / this.columnCount) + '%';
         let root = document.documentElement;
         root.style.setProperty('--width', columnWidthAsPercentage)

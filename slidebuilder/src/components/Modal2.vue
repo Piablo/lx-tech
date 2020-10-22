@@ -67,6 +67,10 @@ export default {
         this.showExpanded = false;
       };
     })
+
+    bus.$on("closeModal2", (state) => {
+      this.showExpanded = false;
+    })
   },
 
 }

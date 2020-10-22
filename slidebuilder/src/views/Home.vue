@@ -88,8 +88,12 @@ export default {
       this.getTreeviewDataFromDb(parentId); 
     },
     getCurrentTask: function(current){
-      this.taskId = current.ticketNumber;
-      this.showTaskNumber = true;
+      if(current !== null){
+        this.taskId = current.ticketNumber;
+        this.showTaskNumber = true;
+      }else{
+        this.showTaskNumber = false;
+      }
     },
 
     getShowTaskModal: function(state){

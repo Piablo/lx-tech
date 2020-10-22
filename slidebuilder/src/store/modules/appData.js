@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 //Services
-// import { bus }from '@/services/Bus';
+import { bus }from '@/services/Bus';
 import registry from '../registry';
 import sharedFunctions from '../../services/sharedFunctions.js';
 
@@ -15,6 +15,28 @@ function getIP(userDeviceData){
         ip = ip.substring(0, ip.length-1);
     }
     return ip;
+}
+
+function sanitizeGridData(properties, gridName){
+    let data = [];
+    let listLength = properties.length;
+    for(let i = 0; i < listLength; i++){
+        let columnData = [
+            properties[i].ticketNumber,
+            properties[i].label,
+            properties[i].status,
+            properties[i].type,
+        
+        ];
+        data.push(columnData);
+        //Add a session option to show how many sessions it took to work on a task or subtask
+    }
+
+    let gridData = {};
+    gridData.data = data;
+    gridData.name = gridName;
+    state.gridData = gridData;
+    state.openTasks = properties;
 }
 
 
@@ -94,25 +116,8 @@ const actions = {
             const response = await axios.post('http://localhost:4000/api/get-open-tasks', payload);
 
             let properties = response.data;
-            let data = [];
-            let listLength = properties.length;
-            for(let i = 0; i < listLength; i++){
-                let columnData = [
-                    properties[i].ticketNumber,
-                    properties[i].label,
-                    properties[i].status,
-                    properties[i].type,
-                
-                ];
-                data.push(columnData);
-                //Add a session option to show how many sessions it took to work on a task or subtask
-            }
-
-            let gridData = {};
-            gridData.data = data;
-            gridData.name = gridName;
-            state.gridData = gridData;
-            state.openTasks = properties;
+            sanitizeGridData(properties, gridName);
+            
         }
     },
     async getTreeviewDataFromDb({commit}, parentId){
@@ -176,9 +181,20 @@ const actions = {
             userDetails: state.userDetails,
             task: task
         }
+        bus.$emit('closeModal2', true);
         const response = await axios.post('http://localhost:4000/api/update-task', payload);
-        state.currentTask = response.data;
-        mutations.toggleModal(state, false)
+        console.log(response)
+        let activeTask = response.data.activeTask;
+        state.currentTask = activeTask;
+        if(activeTask !== null){
+            mutations.toggleModal(state, false)
+        }
+        let properties = response.data.openTasks;
+        let gridName = registry.TASK_GRID;
+        sanitizeGridData(properties, gridName);
+        
+        //state.currentTask = response.data;
+        //mutations.toggleModal(state, false)
         state.spinnerState = false;
     },
     async getSlideData(parentId){

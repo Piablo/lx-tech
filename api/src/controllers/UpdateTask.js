@@ -7,7 +7,6 @@ module.exports = {
 
         const user = req.body.userDetails;
         const userAuthenticated = await globalFunctions.authenticateUser(user);
-        
         if(userAuthenticated){
             console.log('UpdateTask')
             let task = req.body.task;
@@ -90,10 +89,24 @@ module.exports = {
                     }
                 })
             }
-    
-            console.log("get active task if any");
-            console.log("get all open tasks")
-            console.log("send to client")
+
+            const activeTask = await Task.findOne({
+                where: {
+                    status: 'active'
+                }
+            })
+
+            const openTasks = await Task.findAll({
+                where:{
+                    isOpen: true
+                }
+            })
+
+            const response = {
+                activeTask: activeTask,
+                openTasks: openTasks
+            }
+            res.send(response)
         }
     }
 }
