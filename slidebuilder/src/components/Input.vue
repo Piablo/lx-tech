@@ -71,20 +71,18 @@ export default {
 .input-inputComponent{
   width: calc(100% - 12px);
   height: 28px;
-  border-radius: 5px;
-  border-style: none;
   padding-left: 10px;
-  outline-color: transparent;
-  background-color: rgba(255,255,255, .1);
-  outline-style: none;
-  box-shadow: inset 0 0 2px rgba(255,255,255, 1);
-  color: rgb(64, 201, 162);
   margin-bottom: 5px;
-  
-  /* cursor: pointer; */
+  background-color:rgba(255, 255, 255, .3);
+  border-style: none;
+  box-shadow: inset 1px 1px 2px rgba(0, 0, 0, 1);
+  outline-style: none;
+  border-radius: 10px;
+  color:rgba(255, 255, 255, .7);
+  font-weight: bold;
 }
 .input-inputComponent::placeholder{
-  color: rgba(255,255,255, .5);
+  color:rgba(255, 255, 255, .4);
 }
 .spacer-input{
   height: 5px;

@@ -67,7 +67,7 @@ export default {
 <style scoped>
 .main-container-btnRound{
   width: 30px;
-  height: 30px;
+  height: 30px; 
   background-color:rgb(64, 201, 162);
   border-radius: 10px;
   color: rgb(42, 50, 75);

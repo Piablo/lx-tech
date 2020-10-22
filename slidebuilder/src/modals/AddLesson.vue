@@ -1,7 +1,7 @@
 <template>
 <div class="main-container-addCourse">
   <div class="inner-container-addCourse">
-    <div v-for="(lesson, index) in lessonsData" :key="index">{{lesson}}</div>
+    <div v-for="(lesson, index) in lessonsData" :key="index">{{lesson.label}}</div>
     <!-- <InputComponent placeholder="Course Name" :name="NEW_COURSE"></InputComponent>
     <Btn2 :name="SAVE_COURSE">Save</Btn2> -->
     <div @click="clickedIndex(lessonsData.length)" v-if="showEndButton"><BtnRound>+</BtnRound></div>

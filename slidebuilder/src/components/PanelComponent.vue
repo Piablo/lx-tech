@@ -1,6 +1,12 @@
 <template>
 <div class="main-container-panel">
   <div class="toolbar-panel center-middle">
+    <div class="btn-round-container-panel left-btn-round-panel">
+      <slot name="leftbtn"></slot>
+    </div>
+    <div class="btn-round-container-panel right-btn-round-panel">
+      <slot name="rightbtn"></slot>
+    </div>
     <slot name="header"></slot>
   </div>
   <div class="outer-content-panel">
@@ -53,21 +59,58 @@ export default {
 
 <style scoped>
 .main-container-panel{
-  position: relative;
+  /* position: relative;
   margin-bottom: 5px;
   border-radius: 10px;
+  overflow: hidden;
+  width: 200px; */
+  border-radius: 15px;
   overflow: hidden;
 }
 .toolbar-panel{
   width: 100%;
-  height: 2em;
-  background-color: #40C9A2;
+  height: 40px;
+  background-color:rgb(64, 201, 162);
+  position: relative;
+  font-weight: bold;
 }
 .outer-content-panel{
   background-color: #40C9A2;
   padding-bottom: .54em;
   
 }
+.inner-content-panel{
+  border-radius: 15px;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, .3);
+  box-shadow: inset 1px 1px 3px rgba(0, 0, 0, .5);
+}
+
+.btn-round-container-panel{
+  position: absolute;
+  width: 30px;
+  height: 30px;
+}
+.left-btn-round-panel{
+  Left: 10px;
+}
+.right-btn-round-panel{
+  right: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .inner-content-panel{
   width: calc(100% - 1em);
   margin-left: .5em;

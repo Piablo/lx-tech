@@ -40,8 +40,6 @@ export default {
     }
   },
   created(){
-
-    
     this.showSpinner = this.getSpinnerState;
     this.getUserDetailsOnLoad()
 

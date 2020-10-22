@@ -4,9 +4,9 @@ const globalFunctions = require('../services/globalFunctions.js');
 module.exports = {
     async model (req, res) {
 
-        const user = req.body.userDetails
-
-        const userAuthenticated = await globalFunctions.authenticateUser(user);
+        const user = req.body.userDetails;
+        const userAuthenticated = await globalFunctions.authenticateUser(user); 
+        
         if(userAuthenticated){
             console.log('SaveSlides')
             let slides = req.body.slides;

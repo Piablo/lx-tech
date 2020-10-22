@@ -78,14 +78,14 @@ export default {
   computed: mapGetters(['getCurrentTask', 'getShowTaskModal', 'getUserDetails']),
 
   created(){
-    let parentId = 0;
-    //this.getTreeviewDataFromDb(parentId); 
+    
     
   },
 
   watch:{
     getUserDetails: function(current){
-
+      let parentId = 0;
+      this.getTreeviewDataFromDb(parentId); 
     },
     getCurrentTask: function(current){
       this.taskId = current.ticketNumber;

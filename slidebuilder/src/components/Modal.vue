@@ -1,20 +1,26 @@
 <template>
   <div class="main-container-modal center-middle">
     <div class="container-modal">
-      <div class="header-container-modal">{{label}}
-        <div class="close-btn-modal center-middle" @click="closeModal">x</div>
-      </div>
-      
-      <div class="inner-container-modal">
-        <router-view :name="routerView"></router-view>
-      </div>
+      <PanelComponent>
+        <template v-slot:header>{{label}}</template>
+        <template v-slot:leftbtn></template>
+        <template v-slot:rightbtn>
+          <div @click="closeModal">
+            <BtnRound>x</BtnRound>
+          </div>
+        </template>
+        <template v-slot:content>
+          <router-view :name="routerView"></router-view>
+        </template>
+      </PanelComponent>
     </div>
   </div>
 </template>
 
 <script>
 //Components
-// import HelloWorld from '@/components/HelloWorld.vue'
+import PanelComponent from '@/components/PanelComponent.vue';
+import BtnRound from '@/components/BtnRound.vue'
 
 //Services
 //import { bus }from '@/services/Bus';
@@ -33,7 +39,8 @@ export default {
     'label'
   ],
   components: {
-    // HelloWorld
+    PanelComponent,
+    BtnRound
   },
   data(){
     return {
@@ -62,14 +69,20 @@ export default {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, .4);
-  
 }
 .container-modal{
-  padding: 10px;
+  /* padding: 10px;
   background-color: rgb(64, 201, 162);
   border-radius: 15px;
-  box-shadow: 10px 10px 20px rgba(0, 0, 0, .5);
+  box-shadow: 10px 10px 20px rgba(0, 0, 0, .5); */
 }
+
+
+
+
+
+
+/* 
 .header-container-modal{
   width: 100%;
   height: 30px;
@@ -99,5 +112,5 @@ export default {
   box-shadow: inset 1px 1px 3px rgba(0, 0, 0, .5);
   color: rgb(64, 201, 162);
 
-}
+} */
 </style>

@@ -13,7 +13,7 @@
 
 <script>
 //Components
-import Btn1 from '@/components/Btn1.vue'
+import Btn1 from '@/components/Btn1.vue';
 
 //Services
 //import { bus }from '@/services/Bus';
@@ -27,7 +27,7 @@ export default {
     'props'
   ],
   components: {
-    Btn1
+    Btn1,
   },
   data(){
     return {

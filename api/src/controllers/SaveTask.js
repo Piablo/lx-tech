@@ -5,11 +5,10 @@ const globalFunctions = require('../services/globalFunctions');
 module.exports = {
     async model (req, res) {
 
-        let task = req.body;
-
-        const user = req.body.userDetails
-
+        let task = req.body.loggedTask;
+        const user = req.body.userDetails;
         const userAuthenticated = await globalFunctions.authenticateUser(user);
+        
         if(userAuthenticated){
             console.log('SaveTasks')
             task.status = 'logged';
