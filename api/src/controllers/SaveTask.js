@@ -15,7 +15,12 @@ module.exports = {
             task.dateTimeLogged = dayjs().format('YY-MM-DD HH-mm-ss');
             task.ticketNumber = dayjs().format('YYMMDDHHmmss');
             task.isOpen = true;
-    
+            let logs = [];
+            let log = {dataTimeLogged: dayjs().format('YY-MM-DD HH-mm-ss')};
+            logs.push(log);
+            logs = JSON.stringify(logs);
+            task.logs = logs;
+
             const response = await Task.create(task);
     
             res.send(response)

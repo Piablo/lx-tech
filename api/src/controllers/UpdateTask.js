@@ -43,7 +43,6 @@ module.exports = {
     
                 if(newTask.status === 'logged'){
                     newTaskDateTimeStarted = dayjs().format('YY-MM-DD HH-mm-ss');
-                    newTaskLogs = [];
                     newTaskLogs.push({dateTimeStarted: newTaskDateTimeStarted})
                 }else{
                     newTaskDateTimeStarted = newTask.dateTimeStarted;
@@ -82,12 +81,31 @@ module.exports = {
             }
             else if(instruction === 'closed'){
                 console.log('close this task');
+
+                let taskToClose = await Task.findOne({
+                    where:{
+                        id: task.id
+                    }
+                });
                 let taskToCloseId = task.id;
-                await Task.update({isOpen: false, status: 'closed'}, {
+                let taskToCloseIsOpen = false;
+                let taskToCloseStatus = 'closed';
+                let taskToCloseLogs = JSON.parse(taskToClose.logs);
+                taskToCloseLogs.push({dateTimeComplete: dayjs().format('YY-MM-DD HH-mm-ss')});
+                taskToCloseLogs = JSON.stringify(taskToCloseLogs);
+                let taskToCloseDateTimeComplete = dayjs().format('YY-MM-DD HH-mm-ss');
+
+
+                await Task.update({
+                    isOpen: taskToCloseIsOpen,
+                    status: taskToCloseStatus,
+                    dateTimeComplete: taskToCloseDateTimeComplete,
+                    logs: taskToCloseLogs
+                }, {
                     where:{
                         id: taskToCloseId
                     }
-                })
+                });
             }
 
             const activeTask = await Task.findOne({
