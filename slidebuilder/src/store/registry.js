@@ -32,6 +32,12 @@ export default {
     TASK_GRID: 'task-grid',
 
 
+    //ViewStates
+    NOTHING_SELECTED: 'nothing-selected',
+    COURSE_SELECTED: 'course-selected',
+    LESSON_SELECTED: 'lesson-selected',
+
+
     //Models
     insertBlankSlide(parentId){
         let slide = {

@@ -11,6 +11,7 @@ const SaveSlides = require('./controllers/SaveSlides');
 const RegisterUser = require('./controllers/RegisterUser');
 const LoginUser = require('./controllers/LoginUser');
 const AuthenticateUser = require('./controllers/AuthenticateUser');
+const DeleteSlide = require('./controllers/DeleteSlide');
 
 module.exports = (app) => {
 
@@ -27,4 +28,5 @@ module.exports = (app) => {
     app.post('/api/register-user', RegisterUser.model);
     app.post('/api/login-user', LoginUser.model);
     app.post('/api/authenticate-user', AuthenticateUser.model);
+    app.post('/api/delete-slide', DeleteSlide.model);
 }

@@ -26,7 +26,6 @@ function sanitizeGridData(properties, gridName){
             properties[i].label,
             properties[i].status,
             properties[i].type,
-        
         ];
         data.push(columnData);
         //Add a session option to show how many sessions it took to work on a task or subtask
@@ -62,8 +61,11 @@ const state = {
     startActivityTimerState: false,
     controlPanelState: false,
     selectedLessonId: null,
-    userDetails: null
-
+    userDetails: null,
+    viewState: registry.NOTHING_SELECTED,
+    slidePlayerData: null,
+    slidePlayerStatus: false,
+    resetSlidePlayer: 0
 };
 
 const getters = {
@@ -78,6 +80,10 @@ const getters = {
     getStartActivityTimerState: (state) => state.startActivityTimerState,
     getControlPanelState: (state) => state.controlPanelState,
     getUserDetails: (state) => state.userDetails,
+    getViewState: (state) => state.viewState,
+    getSlidePlayerData: (state) => state.slidePlayerData,
+    getSlidePlayerStatus: (state) => state.slidePlayerStatus,
+    getResetSlidePlayer: (state) => state.resetSlidePlayer,
 };
 
 const actions = {
@@ -98,8 +104,6 @@ const actions = {
         let payload = {
             userDetails: state.userDetails
         }
-        console.log("Yo");
-        console.log(state)
         const response = await axios.post('http://localhost:4000/api/get-active-task', payload);
         const activeTask = response.data;
         if(activeTask === ""){
@@ -157,6 +161,7 @@ const actions = {
     },
     async getBranchData(parentId){
         state.spinnerState = true;
+        state.viewState = registry.COURSE_SELECTED;
         let payload = {
             parentId: parentId,
             userDetails: state.userDetails
@@ -183,7 +188,6 @@ const actions = {
         }
         bus.$emit('closeModal2', true);
         const response = await axios.post('http://localhost:4000/api/update-task', payload);
-        console.log(response)
         let activeTask = response.data.activeTask;
         state.currentTask = activeTask;
         if(activeTask !== null){
@@ -198,6 +202,8 @@ const actions = {
         state.spinnerState = false;
     },
     async getSlideData(parentId){
+        state.spinnerState = true;
+        state.viewState = registry.LESSON_SELECTED;
         let payload = {
             parentId: parentId,
             userDetails: state.userDetails,
@@ -206,7 +212,9 @@ const actions = {
 
         state.slides = response.data;
         state.selectedLessonId = parentId;
-        state.controlPanelState = true;
+        mutations.calcSlidePlayerData(state.slides);
+        state.controlPanelState = true; ///this should get decised by getViewState
+        state.spinnerState = false;
     },
     async saveSlides(){
         let payload = {
@@ -227,6 +235,17 @@ const actions = {
         const response = await axios.post('http://localhost:4000/api/authenticate-user', userDetails);
         state.userDetails.email = response.data.email;
         state.spinnerState = false;
+    },
+    async deleteSlide(deleteSlideId){
+        state.spinnerState = true;
+        let payload = {
+            deleteSlideId: deleteSlideId,
+            userDetails: state.userDetails,
+        }
+        const response = await axios.post('http://localhost:4000/api/delete-slide', payload);
+        if(response.data === "OK"){
+            state.spinnerState = false;
+        }
     }
 };
 
@@ -244,7 +263,10 @@ const mutations = {
             state.slides.splice(index, 0, card);
         }
         else if(controlName === registry.DELETE_CARD){
+            let deleteSlideId = state.slides[index].id;
+            console.log(state.slides[index]);
             state.slides.splice(index, 1);
+            actions.deleteSlide(deleteSlideId)
         }
     },
     commitToStateDispatcher(state, payload){
@@ -412,7 +434,40 @@ const mutations = {
         }
         state.activeIndexs = tempArray;
     },
-   
+    calcSlidePlayerData(slides){
+        let listLength = slides.length;
+        let firstSlideStartTick = slides[0].timing.startTick;
+        let highestTick = 0;
+        let slideCount = slides.length;
+        let slidesTiming = [];
+        
+
+        for(let i = 0; i < listLength; i++){
+            if(slides[i].timing.endTick > highestTick){
+                highestTick = slides[i].timing.endTick;
+            }
+            slidesTiming.push(slides[i].timing);
+        }
+
+        let intervalCount = highestTick / 100;
+        let intervalWidth = 100 / intervalCount;
+
+        let slidePlayerData = {
+            firstSlideStartTick: firstSlideStartTick,
+            highestTick: highestTick,
+            slideCount: slideCount,
+            slidesTiming: slidesTiming,
+            intervalCount: intervalCount,
+            intervalWidth: intervalWidth
+        }
+        state.slidePlayerData = slidePlayerData;
+    },
+    setSlidePlayerStatus(state, status){
+        state.slidePlayerStatus = status;
+    },
+    resetSlidePlayerStatus(state){
+        state.resetSlidePlayer += 1;
+    }
 };
 
 export default {

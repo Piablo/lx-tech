@@ -45,6 +45,7 @@ export default {
 
   },
   mounted(){
+    this.startActivityTimer();
     //this.setUserDetailsOnLoad();
 
   },
@@ -72,17 +73,14 @@ export default {
       
       this.timer = setInterval(function(){  
 
-        console.log(this.clock);
-        console.log(this.minsInactive);
         if(this.clock === 60){
           this.minsInactive += 1;
           this.clock = 0
         }
         if(this.minsInactive === this.pauseAfterMins){ 
-          debugger 
           let payload = {
             route: 'workPaused',
-            headline: 'You forgot to logout.'
+            headline: 'You forgot to Pause your current task.'
           }
           this.showModal(payload);
           clearTimeout(this.timer);
