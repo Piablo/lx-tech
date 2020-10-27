@@ -8,17 +8,17 @@ module.exports = {
         const userAuthenticated = await globalFunctions.authenticateUser(user); 
         
         if(userAuthenticated){
-            console.log('SaveSlides')
+            console.log('SaveSlides');
             let slides = req.body.slides;
             const parentId = slides[0].parentId;
      
             slides = globalFunctions.sanitizeSlidesForDB(slides);
      
-            await Slide.bulkCreate(slides, {updateOnDuplicate: ["timing"] });
+            await Slide.bulkCreate(slides, {updateOnDuplicate: ["timing", "slideType"] });
      
             const allLessonSlides = await Slide.findAll({
                 where:{
-                 parentId: parentId
+                    parentId: parentId
                 }
             })
      

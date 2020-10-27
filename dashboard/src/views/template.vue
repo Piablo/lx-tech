@@ -12,6 +12,12 @@
 //Vuex
 //import { mapGetters, mapActions } from 'vuex';
 
+
+//colors
+//Green = rgb(64, 201, 162)
+//BlueGreen = rgb(42, 50, 75)
+//Orange = rgb(241, 89, 70) FFC15E
+
 export default {
   props: [
     'props'

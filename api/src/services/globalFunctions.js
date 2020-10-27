@@ -9,8 +9,10 @@ module.exports = {
     
         for(let i = 0; i < listLength; i++){
             let slide = {
+                id: slides[i].id,
                 timing: JSON.stringify(slides[i].timing),
-                parentId: slides[i].parentId
+                parentId: slides[i].parentId,
+                slideType: slides[i].slideType,
             }
             returnArray.push(slide);
         }
@@ -26,7 +28,8 @@ module.exports = {
             let slide = {
                 id: slides[i].id,
                 timing: JSON.parse(slides[i].timing),
-                parentId: slides[i].parentId
+                parentId: slides[i].parentId,
+                slideType: slides[i].slideType,
             }
             returnArray.push(slide);
         }

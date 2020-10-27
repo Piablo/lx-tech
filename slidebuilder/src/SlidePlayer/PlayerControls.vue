@@ -20,7 +20,7 @@
 import BtnRound from '@/components/BtnRound.vue'
 
 //Services
-//import { bus }from '@/services/Bus';
+import { bus }from '@/services/Bus';
 
 //Vuex
 import { mapGetters, mapMutations } from 'vuex';
@@ -57,6 +57,8 @@ export default {
 
     play(){
       this.timer = setInterval(function(){
+        console.log("timer4")
+        bus.$emit('timerTick', this.currentTick);
         if(this.currentTick === this.endTick){
           this.resetSlidePlayerStatus();
           return
@@ -85,7 +87,7 @@ export default {
 
   watch: {
     getSlidePlayerData: function(data){
-      this.endTick = data.highestTick;
+      this.endTick = data.endTick;
     },
     getSlidePlayerStatus: function(status){
       if(status){

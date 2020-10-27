@@ -17,6 +17,7 @@ export default {
     END_TICK: 'end-tick',
     NEW_COURSE: 'new-course',
     NEW_LESSON: 'new-lesson',
+    FILE_SELECTED: 'file-selected',
 
     //TextAreas
     TASK_INFO: 'task-info',
@@ -24,6 +25,7 @@ export default {
     //Selects
     TASK_TYPE: 'task-type',
     TASK_STATUS: 'task-status',
+    SLIDE_TYPE: 'slide-type',
 
     //Treeviews
     COURSE_TREEVIEW: 'course_treeview',

@@ -1,6 +1,7 @@
 // import axios from 'axios';
 // import registry from './registry';
 // import globals from '../../services/globals';
+import toolbarData from '../modules/toolbarData';
 
 //Services
 // import { bus }from '@/services/Bus';
@@ -23,7 +24,7 @@ const getters = {
 const actions = {
 
     async fetchCourse({commit}, payload){
-        debugger
+        
     }
 
     // async register(){
@@ -36,6 +37,15 @@ const actions = {
 };
 
 const mutations = {
+
+    onButtonClick(state, payload){
+        const parent = payload.parent;
+        const name = payload.name;
+
+        if(parent === 'toolbar'){
+            toolbarData.mutations.onButtonClick(payload);
+        }
+    }
 
     // commitRoute(state, route){
     //     state.currentRoute = route;

@@ -5,9 +5,13 @@ module.exports = {
     async model (req, res) {
 
         const user = req.body.userDetails;
+        
         const userAuthenticated = await globalFunctions.authenticateUser(user);
         if(userAuthenticated){
             let deleteSlideId = req.body.deleteSlideId;
+            let parentId = req.body.parentId;
+
+            console.log(req.body);
 
             await Slide.destroy({
                 where: {
@@ -15,7 +19,15 @@ module.exports = {
                 }
             })
 
-            res.sendStatus(200);
+            let allSlides = await Slide.findAll({
+                where:{
+                    parentId: parentId
+                }
+            })
+
+            let response = globalFunctions.sanitizeSlidesForClient(allSlides);
+
+            res.send(response);
         }
     }
 }

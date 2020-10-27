@@ -1,6 +1,8 @@
 <template>
   <div class="main-container-player" v-if="showPlayer">
-    <div class="slide-player-window-player"></div>
+    <div class="slide-player-window-player">
+      <PlayerWindow></PlayerWindow>
+    </div>
     <div class="spacer"></div>
     <div class="slide-player-controls-player">
       <PlayerControls></PlayerControls>
@@ -18,6 +20,7 @@
 //Components
 import SlideVisualizer from '../SlidePlayer/SlideVisualizer';
 import PlayerControls from '../SlidePlayer/PlayerControls';
+import PlayerWindow from '../SlidePlayer/PlayerWindow';
 
 //Services
 //import { bus }from '@/services/Bus';
@@ -32,7 +35,8 @@ export default {
   ],
   components: {
     SlideVisualizer,
-    PlayerControls
+    PlayerControls,
+    PlayerWindow
   },
   data(){
     return {
@@ -98,7 +102,7 @@ export default {
 .slide-player-window-player{
   width: 100%;
   padding-top: 56%;
-  background-color: aliceblue;
+  position: relative;
 }
 .slide-player-controls-player{
   width: 100%;

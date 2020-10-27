@@ -1,5 +1,5 @@
 <template>
-<div>template</div>
+  <div class="main-container-btnAnimation"></div>
 </template>
 
 <script>
@@ -10,7 +10,7 @@
 //import { bus }from '@/services/Bus';
 
 //Vuex
-//import { mapGetters, mapActions } from 'vuex';
+import { mapGetters } from 'vuex';
 
 
 //colors
@@ -34,15 +34,26 @@ export default {
     //...mapActions(['fetchTodos'])
   },
 
-  //computed: mapGetters(['allTodos']),
+  computed: mapGetters(['getAnimationPanelData', 'getShowAnimatedPanel']),
 
   created(){
     // bus.$on("addFlashCardButtonComponent" + "onClick", (data) => {
     //   debugger;
     // })
+  },
+  watch:{
+    getAnimationPanelData: function(data){
+      debugger
+    },
+    getShowAnimatedPanel: function(show){
+      debugger
+    }
   }
 }
 </script>
 
 <style scoped>
+.main-container-btnAnimation{
+  color: white;
+}
 </style>

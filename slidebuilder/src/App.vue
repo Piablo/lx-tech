@@ -45,7 +45,7 @@ export default {
 
   },
   mounted(){
-    this.startActivityTimer();
+    //this.startActivityTimer();
     //this.setUserDetailsOnLoad();
 
   },
@@ -72,6 +72,7 @@ export default {
       this.minsInactive = 0;
       
       this.timer = setInterval(function(){  
+        console.log("timer2")
 
         if(this.clock === 60){
           this.minsInactive += 1;
@@ -106,7 +107,7 @@ export default {
     },
     getStartActivityTimerState: function(state){
       if(state){
-        this.startActivityTimer();
+        //this.startActivityTimer();
       }
     },
     getUserDetails: function(userDetails){

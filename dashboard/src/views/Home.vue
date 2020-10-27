@@ -1,12 +1,16 @@
 <template>
-<div class="main-component-home">
-  <Mindmap></Mindmap>
-</div>
+  <div class="main-component-home">
+    <div class="toolbar-container-home">
+      <Toolbar></Toolbar>
+      <BtnAnimation></BtnAnimation>
+    </div>
+  </div>
 </template>
 
 <script>
 //Components
-import Mindmap from '@/components/Mindmap.vue'
+import Toolbar from '@/components/Toolbar';
+import BtnAnimation from '@/components/BtnAnimation';
 
 //Services
 //import { bus }from '@/services/Bus';
@@ -14,12 +18,19 @@ import Mindmap from '@/components/Mindmap.vue'
 //Vuex
 //import { mapGetters, mapActions } from 'vuex';
 
+
+//colors
+//Green = rgb(64, 201, 162)
+//BlueGreen = rgb(42, 50, 75)
+//Orange = rgb(241, 89, 70) FFC15E
+
 export default {
   props: [
     'props'
   ],
   components: {
-    Mindmap
+    Toolbar,
+    BtnAnimation
   },
   data(){
     return {
@@ -45,8 +56,10 @@ export default {
   width: 100%;
   height: 100vh;
   background-color: #2A324B;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+}
+.toolbar-container-home{
+  width: 100%;
+  height: 40px;
+  background-color: rgb(64, 201, 162);
 }
 </style>

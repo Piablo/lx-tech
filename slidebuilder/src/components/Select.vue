@@ -35,7 +35,8 @@ export default {
     'placeholder',
     'options',
     'name',
-    'index'
+    'index',
+    'previouslySelected'
   ],
   components: {
     // HelloWorld
@@ -71,6 +72,7 @@ export default {
   //computed: mapGetters(['allTodos']),
 
   created(){
+    this.userInput = this.previouslySelected;
     bus.$on("globalClick", (data) => {
       if(this.globalClickBlocked){
         this.globalClickBlocked = false;
@@ -143,11 +145,12 @@ export default {
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 1);
   padding-bottom: 10px;
   padding-top: 10px;
-
+  z-index: 100;
 }
 .inner-options-menu-select{
   margin-left:10px;
   width: calc(100% - 20px);
+  z-index: 101;
 }
 .option-container-select{
   width:100%;

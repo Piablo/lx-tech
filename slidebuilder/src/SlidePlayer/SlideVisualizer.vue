@@ -15,10 +15,10 @@
 // import HelloWorld from '@/components/HelloWorld.vue'
 
 //Services
-//import { bus }from '@/services/Bus';
+import { bus }from '@/services/Bus';
 
 //Vuex
-import { mapGetters } from 'vuex';
+import { mapGetters, mapMutations } from 'vuex';
 
 //colors
 //Green = rgb(64, 201, 162)
@@ -39,7 +39,7 @@ export default {
 
       slideCount: null,
       firstSlideStartTick: null,
-      highestTick: null,
+      endTick: null,
       slidesTiming: null,
 
       visualizerTimer: null,
@@ -50,14 +50,13 @@ export default {
   },
 
   methods: {
-    //...mapActions(['fetchTodos'])
-    
+    //...mapMutations(['getResetSlidePlayer']),
 
     renderSlideDurations(){
       const listLength = this.slideCount;
       let fromTop = 5;
       for(let i = 0; i < listLength; i++){
-        let endInterval = (this.slidesTiming[i].endTick / this.intervalCount);
+        let endInterval = ((this.slidesTiming[i].endTick + this.slidesTiming[i].startTick) / this.intervalCount);
         let startInterval = (this.slidesTiming[i].startTick / this.intervalCount);
         
         this.$refs.slideDurationSlideVisualizer[i].style.left = (startInterval + "%");
@@ -66,21 +65,6 @@ export default {
         fromTop += 5;
       }
     }, 
-    play(){
-      this.visualizerTimer = setInterval(function(){
-        
-        this.renderCurrentTick(this.currentTickIndex)
-        if(this.currentTick === this.highestTick){
-          clearInterval(this.visualizerTimer);
-          return
-        }
-        this.currentTickIndex +=1;
-        this.currentTick += this.interval;
-      }.bind(this), this.interval);
-    },
-    pause(){
-      clearInterval(this.visualizerTimer);
-    },
 
     renderCurrentTick(index){
       try{
@@ -95,19 +79,25 @@ export default {
       }
       
     },
+  
     resetComponent(){
-      this.currentTick = 0;
-      this.$refs.intervalSlideVisualizer[this.currentTickIndex - 1].style.borderRight = '';
       this.currentTickIndex = 0;
+      this.currentTick =0;
     }
+  
+  
   },
 
-  computed: mapGetters(['getSlidePlayerData', 'getSlidePlayerStatus', 'getResetSlidePlayer']),
+  computed: mapGetters(['getSlidePlayerData', 'getResetSlidePlayer']),
 
   created(){
-    // bus.$on("addFlashCardButtonComponent" + "onClick", (data) => {
-    //   debugger;
-    // })
+    bus.$on("timerTick", (tick) => {
+      console.log("new ticker")
+      console.log(this.currentTickIndex);
+      this.renderCurrentTick(this.currentTickIndex);
+      this.currentTickIndex +=1;
+      this.currentTick += this.interval;
+    })
   },
   mounted(){
     
@@ -119,17 +109,13 @@ export default {
     getSlidePlayerData: function(data){
       this.slideCount = data.slideCount;
       this.firstSlideStartTick = data.firstSlideStartTick;
-      this.highestTick = data.highestTick;
+      this.endTick = data.endTick;
       this.slidesTiming = data.slidesTiming;
       this.intervalWidth = data.intervalWidth;
       this.intervalCount = data.intervalCount;
-    },
-    getSlidePlayerStatus: function(status){
-      if(status){
-        this.play();
-      }else{
-        this.pause();
-      }
+      let intervalWidthAsPercentage = this.intervalWidth + "%";
+      let root = document.documentElement;
+      root.style.setProperty('--width', intervalWidthAsPercentage)
     },
     getResetSlidePlayer: function(resetCount){
       this.resetComponent()
@@ -139,6 +125,9 @@ export default {
 </script>
 
 <style scoped>
+:root{
+  --width: null;
+}
 .main-container-slideVisualizer{
   width: 100%;
   height: 100px;
@@ -163,7 +152,7 @@ export default {
 }
 .interval-slideVisualizer{
   height: 90px;
-  width: 2%;
+  width: var(--width);
   z-index: 100;
 }
 </style>

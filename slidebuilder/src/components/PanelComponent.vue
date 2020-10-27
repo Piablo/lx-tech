@@ -64,8 +64,7 @@ export default {
   border-radius: 10px;
   overflow: hidden;
   width: 200px; */
-  border-radius: 15px;
-  overflow: hidden;
+  
 }
 .toolbar-panel{
   width: 100%;
@@ -73,17 +72,21 @@ export default {
   background-color:rgb(64, 201, 162);
   position: relative;
   font-weight: bold;
+  border-radius: 15px 15px 0 0;
 }
 .outer-content-panel{
   background-color: #40C9A2;
   padding-bottom: .54em;
-  
+  z-index: -1;
+  border-radius: 0 0 15px 15px;
 }
 .inner-content-panel{
   border-radius: 15px;
-  overflow: hidden;
   background-color: rgba(0, 0, 0, .3);
   box-shadow: inset 1px 1px 3px rgba(0, 0, 0, .5);
+  z-index: 20;
+  width: calc(100% - 1em);
+  margin-left: .5em;
 }
 
 .btn-round-container-panel{
@@ -97,28 +100,8 @@ export default {
 .right-btn-round-panel{
   right: 10px;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-.inner-content-panel{
-  width: calc(100% - 1em);
-  margin-left: .5em;
-  background-color: rgba(0,0,0, .4);
-  border-radius: 10px;
-
-}
 .content-container-panel{
   padding: 5px;
+  z-index: 1;
 }
 </style>

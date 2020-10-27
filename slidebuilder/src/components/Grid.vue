@@ -53,7 +53,7 @@ export default {
         rowIndex: rowIndex,
       }
       this.commitToStateDispatcher(payload);
-    }
+    },
   },
 
   computed: mapGetters(['getGridData']),
@@ -83,7 +83,7 @@ export default {
         }
         this.gridData = data;
       }
-    }
+    },
   }
 }
 </script>

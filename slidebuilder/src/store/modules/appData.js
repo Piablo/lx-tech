@@ -1,4 +1,6 @@
 import axios from 'axios';
+import FormData from 'form-data';
+import fs from 'fs';
 
 //Services
 import { bus }from '@/services/Bus';
@@ -39,6 +41,7 @@ function sanitizeGridData(properties, gridName){
 }
 
 
+
 const state = {
     spinnerState: false,
     slides: [],
@@ -65,7 +68,11 @@ const state = {
     viewState: registry.NOTHING_SELECTED,
     slidePlayerData: null,
     slidePlayerStatus: false,
-    resetSlidePlayer: 0
+    resetSlidePlayer: 0,
+    selectedCourseId: null,
+    selectedLessonId: null,
+    filePath: null,
+    activeIds: [null, null, null],
 };
 
 const getters = {
@@ -162,6 +169,8 @@ const actions = {
     async getBranchData(parentId){
         state.spinnerState = true;
         state.viewState = registry.COURSE_SELECTED;
+        state.selectedCourseId = parentId;
+
         let payload = {
             parentId: parentId,
             userDetails: state.userDetails
@@ -204,25 +213,29 @@ const actions = {
     async getSlideData(parentId){
         state.spinnerState = true;
         state.viewState = registry.LESSON_SELECTED;
+        state.selectedLessonId = parentId;
+
         let payload = {
             parentId: parentId,
             userDetails: state.userDetails,
         }
         const response = await axios.post('http://localhost:4000/api/get-slides', payload);
 
-        state.slides = response.data;
+        //state.slides = response.data;
         state.selectedLessonId = parentId;
-        mutations.calcSlidePlayerData(state.slides);
-        state.controlPanelState = true; ///this should get decised by getViewState
+        mutations.calcSlidePlayerData(response.data);
+        state.controlPanelState = true; ///this should get decided by getViewState
         state.spinnerState = false;
     },
     async saveSlides(){
+        
         let payload = {
             userDetails: state.userDetails,
             slides: state.slides
         }
         const response = await axios.post('http://localhost:4000/api/save-slides', payload);
-        debugger
+        mutations.calcSlidePlayerData(response.data);
+        state.slides = response.data;
     },
     async setUserDetailsOnLoad({commit}, userId){
         state.spinnerState = true;
@@ -236,16 +249,43 @@ const actions = {
         state.userDetails.email = response.data.email;
         state.spinnerState = false;
     },
-    async deleteSlide(deleteSlideId){
+    async deleteSlide(payload){
+        let parentId = payload.parentId;
+        let deleteSlideId = payload.deleteSlideId;
+
         state.spinnerState = true;
-        let payload = {
+        let request = {
             deleteSlideId: deleteSlideId,
+            parentId: parentId,
             userDetails: state.userDetails,
         }
-        const response = await axios.post('http://localhost:4000/api/delete-slide', payload);
-        if(response.data === "OK"){
-            state.spinnerState = false;
-        }
+        const response = await axios.post('http://localhost:4000/api/delete-slide', request);
+        mutations.calcSlidePlayerData(response.data);
+        state.slides = response.data;
+        state.spinnerState = false;
+    },
+    async saveFile(request){
+       
+        
+
+        //var readStream = fs.createReadStream(request.file);
+
+        const formData = new FormData();
+
+        request.file.fieldname = "./dave";
+
+
+        formData.append("file", request.file, request.file.name);
+        let tmpe = state;
+        debugger
+
+        const response = await axios.post('http://localhost:4000/api/upload?path=' + state.filePath, formData)
+        
+        debugger
+        //     headers: {
+        //       'Content-Type': testData.type
+        //     }
+        // });
     }
 };
 
@@ -264,9 +304,14 @@ const mutations = {
         }
         else if(controlName === registry.DELETE_CARD){
             let deleteSlideId = state.slides[index].id;
+            let parentId = state.slides[index].parentId;
             console.log(state.slides[index]);
             state.slides.splice(index, 1);
-            actions.deleteSlide(deleteSlideId)
+            let payload = {
+                deleteSlideId: deleteSlideId,
+                parentId: parentId
+            }
+            actions.deleteSlide(payload)
         }
     },
     commitToStateDispatcher(state, payload){
@@ -284,6 +329,35 @@ const mutations = {
         }
         else if(controlName === registry.SAVE_SLIDES){
             actions.saveSlides();
+        }
+        else if(controlName === registry.SLIDE_TYPE){
+
+            let data = {
+                controlName: registry.SLIDE_TYPE,
+                data: userInput.label
+            }
+            state.slides[payload.index].slideType = userInput.label;
+            bus.$emit('slideEditorStateChange-' + payload.index, data);
+            
+
+            //state.slideType = 
+        }
+        else if(controlName === registry.FILE_SELECTED){
+            let request = {
+                file: payload.file,
+                type: state.slides[payload.index].slideType
+                // index
+            };
+
+            
+            state.activeIds[2] = state.slides[payload.index].id
+
+            state.filePath = (state.activeIds[0]).toString() + '/' + 
+                                (state.activeIds[1]).toString() + '/' +
+                                (state.activeIds[2]).toString() + '/' + 
+                                state.slides[payload.index].slideType + '/';
+            
+            actions.saveFile(request);
         }
 
 
@@ -385,7 +459,9 @@ const mutations = {
         else{
             let parentId = payload.selection.id;
             state.level0ParentId = parentId
+            
             mutations.commitActiveIndexs(level, index);
+            state.activeIds[level] = parentId;
             if(level === 0){
                 actions.getBranchData(parentId);
             }else if(level === 1){
@@ -435,32 +511,42 @@ const mutations = {
         state.activeIndexs = tempArray;
     },
     calcSlidePlayerData(slides){
-        let listLength = slides.length;
-        let firstSlideStartTick = slides[0].timing.startTick;
-        let highestTick = 0;
-        let slideCount = slides.length;
-        let slidesTiming = [];
-        
-
-        for(let i = 0; i < listLength; i++){
-            if(slides[i].timing.endTick > highestTick){
-                highestTick = slides[i].timing.endTick;
+        try {
+            let listLength = slides.length;
+            let firstSlideStartTick = slides[0].timing.startTick;
+            let highestTick = 0;
+            let slideCount = slides.length;
+            let slidesTiming = [];
+            let endTick = null;
+            
+    
+            for(let i = 0; i < listLength; i++){
+                if(slides[i].timing.endTick > highestTick){
+                    highestTick = slides[i].timing.endTick;
+                    endTick = highestTick + slides[i].timing.startTick;
+                }
+                slidesTiming.push(slides[i].timing);
+                slides[i].show = false;
             }
-            slidesTiming.push(slides[i].timing);
+    
+            let intervalCount = endTick / 100;
+            let intervalWidth = 100 / intervalCount;
+    
+            let slidePlayerData = {
+                firstSlideStartTick: firstSlideStartTick,
+                highestTick: highestTick,
+                slideCount: slideCount,
+                slidesTiming: slidesTiming,
+                intervalCount: intervalCount,
+                intervalWidth: intervalWidth,
+                endTick: endTick,
+            }
+            state.slides = slides;
+            state.slidePlayerData = slidePlayerData;
+        }catch{
+            console.log("no slides to load")
         }
 
-        let intervalCount = highestTick / 100;
-        let intervalWidth = 100 / intervalCount;
-
-        let slidePlayerData = {
-            firstSlideStartTick: firstSlideStartTick,
-            highestTick: highestTick,
-            slideCount: slideCount,
-            slidesTiming: slidesTiming,
-            intervalCount: intervalCount,
-            intervalWidth: intervalWidth
-        }
-        state.slidePlayerData = slidePlayerData;
     },
     setSlidePlayerStatus(state, status){
         state.slidePlayerStatus = status;

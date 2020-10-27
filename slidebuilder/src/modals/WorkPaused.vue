@@ -53,6 +53,7 @@ export default {
   },
   mounted(){
     this.timer = setInterval(function(){
+      console.log("timer3")
       if(this.countdown === 0){
         this.pauseActiveTask();
       }

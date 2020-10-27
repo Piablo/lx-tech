@@ -8,6 +8,9 @@ module.exports = (sequelize, DataTypes) =>
         parentId: {
             type: DataTypes.INTEGER,
         },
+        slideType: {
+            type: DataTypes.TEXT,
+        },
         timing: {
             type: DataTypes.TEXT,
         }
