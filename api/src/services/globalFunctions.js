@@ -13,6 +13,7 @@ module.exports = {
                 timing: JSON.stringify(slides[i].timing),
                 parentId: slides[i].parentId,
                 slideType: slides[i].slideType,
+                path: slides[i].path,
             }
             returnArray.push(slide);
         }
@@ -30,6 +31,7 @@ module.exports = {
                 timing: JSON.parse(slides[i].timing),
                 parentId: slides[i].parentId,
                 slideType: slides[i].slideType,
+                path: slides[i].path,
             }
             returnArray.push(slide);
         }

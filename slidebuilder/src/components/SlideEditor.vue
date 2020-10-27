@@ -100,7 +100,7 @@ export default {
 
   watch: {
     getSlides: function(slides){
-      debugger
+      //debugger
     }
   }
 }

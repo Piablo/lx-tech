@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) =>
         },
         timing: {
             type: DataTypes.TEXT,
+        },
+        path: {
+            type: DataTypes.TEXT,
         }
     },{
         timestamps: false,

@@ -52,7 +52,7 @@ const state = {
     courseData: null,
     lessonData: null,
     level0ParentId: null,
-    activeIndexs: null,
+    activeIndexs: [null, null, null],
     loggedTask: {
         label: null,
         type: null,
@@ -236,6 +236,7 @@ const actions = {
         const response = await axios.post('http://localhost:4000/api/save-slides', payload);
         mutations.calcSlidePlayerData(response.data);
         state.slides = response.data;
+        state.spinnerState = false;
     },
     async setUserDetailsOnLoad({commit}, userId){
         state.spinnerState = true;
@@ -265,27 +266,16 @@ const actions = {
         state.spinnerState = false;
     },
     async saveFile(request){
-       
-        
-
-        //var readStream = fs.createReadStream(request.file);
-
+        state.spinnerState = true;
         const formData = new FormData();
-
-        request.file.fieldname = "./dave";
-
-
         formData.append("file", request.file, request.file.name);
-        let tmpe = state;
-        debugger
 
-        const response = await axios.post('http://localhost:4000/api/upload?path=' + state.filePath, formData)
-        
-        debugger
-        //     headers: {
-        //       'Content-Type': testData.type
-        //     }
-        // });
+        const response = await axios.post('http://localhost:4000/api/upload?path=' + state.filePath, formData);
+        if(response.data === "OK"){
+            state.slides[state.activeIndexs[2]].path = state.filePath;
+            actions.saveSlides()
+        }
+
     }
 };
 
@@ -350,9 +340,10 @@ const mutations = {
             };
 
             
-            state.activeIds[2] = state.slides[payload.index].id
+            state.activeIds[2] = state.slides[payload.index].id;
+            state.activeIndexs[2] = payload.index;
 
-            state.filePath = (state.activeIds[0]).toString() + '/' + 
+            state.filePath =    (state.activeIds[0]).toString() + '/' + 
                                 (state.activeIds[1]).toString() + '/' +
                                 (state.activeIds[2]).toString() + '/' + 
                                 state.slides[payload.index].slideType + '/';
@@ -501,14 +492,11 @@ const mutations = {
         state.spinnerState = false;
     },
     commitActiveIndexs(level, index){
-        let tempArray = [];
         if(level === 0){
-            tempArray.push(index);
+            state.activeIndexs[0] = index;
         }else if(level === 1){
-            tempArray.push(state.activeIndexs[0]);
-            tempArray.push(index);
+            state.activeIndexs[1] = index;
         }
-        state.activeIndexs = tempArray;
     },
     calcSlidePlayerData(slides){
         try {
