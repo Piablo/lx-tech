@@ -17,7 +17,16 @@ export default {
     END_TICK: 'end-tick',
     NEW_COURSE: 'new-course',
     NEW_LESSON: 'new-lesson',
+    Y_POSITION_VALUE: 'y-position-value',
+    X_POSITION_VALUE: 'x-position-value',
+    MEDIA_WIDTH: 'media-width', 
+    MEDIA_HEIGHT: 'media-height',
+
+    //Slide States  
     FILE_SELECTED: 'file-selected',
+    TYPE_IMAGE: 'type-image',
+    TYPE_VIDEO: 'type-video',
+    TYPE_AUDIO: 'type-audio',
 
     //TextAreas
     TASK_INFO: 'task-info',
@@ -26,6 +35,8 @@ export default {
     TASK_TYPE: 'task-type',
     TASK_STATUS: 'task-status',
     SLIDE_TYPE: 'slide-type',
+    Y_POSITION: 'y-position',
+    X_POSITION: 'x-position',
 
     //Treeviews
     COURSE_TREEVIEW: 'course_treeview',
@@ -47,7 +58,8 @@ export default {
             timing: {
                 startTick: null,
                 endTick: null
-            }
+            },
+            fileProperties: null,
             
         }
         return slide;

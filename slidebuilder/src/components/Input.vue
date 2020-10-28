@@ -1,6 +1,5 @@
 <template>
   <div class="main-container-input">
-    <div class="spacer-input"></div>
     <input class="input-inputComponent" :placeholder="placeholder" :type="type" @blur="pushInputData" v-model="userInput">
     <div class="error-input">{{errorMessage}}</div>
   </div>
@@ -28,7 +27,8 @@ export default {
     'type',
     'parentIndex',
     'name',
-    'input'
+    'input',
+    'index'
   ],
   components: {
     // HelloWorld
@@ -45,7 +45,8 @@ export default {
       let payload = {
         userInput: this.userInput,
         parentIndex: this.parentIndex,
-        controlName: this.name
+        controlName: this.name,
+        index: this.index
       }
       this.commitToStateDispatcher(payload);
     }

@@ -9,11 +9,28 @@
     <div class="spacer"></div> 
     <SelectComponent :options="slideTypeOptions" placeholder="Select Slide Type" :name="SLIDE_TYPE" :previouslySelected="previouslySelected" :index="index"></SelectComponent>
     <div class="spacer"></div>
+
     <div class="select-file-button-container-slideEditor" v-if="showBrowseFiles">
       <label for="file-upload" class="custom-file-upload">Upload File</label>
       <input id="file-upload" type="file" ref="fileUpload" @change="fileSelected"/>
       <div class="filename-container-slideEditor">{{filename}}</div>
     </div>
+    <div v-if="showImageProperties">
+      <SelectInputCombo :data="yPositionSICombo"></SelectInputCombo>
+      <div class="spacer"></div>
+      <SelectInputCombo :data="xPositionSICombo"></SelectInputCombo>
+      <div class="spacer"></div>
+      <TwoInput>
+        <template v-slot:left>
+          <InputComponent placeholder="width" :index="index" :name="MEDIA_WIDTH"></InputComponent>
+        </template>
+        <template v-slot:right>
+          <InputComponent placeholder="height" :index="index" :name="MEDIA_HEIGHT"></InputComponent>
+        </template>
+      </TwoInput>
+    </div>
+    <div v-if="showVideoProperties">showVideoProperties</div>
+    <div v-if="showAudioProperties">showAudioProperties</div>
     
   </div>
 </template>
@@ -24,7 +41,9 @@ import ExpandablePanel from '@/components/ExpandablePanel.vue';
 import SelectComponent from '@/components/Select.vue';
 import InputComponent from '@/components/Input.vue';
 import registry from '../store/registry.js';
-import Btn2 from '../components/Btn2';
+import Btn2 from '@/components/Btn2';
+import SelectInputCombo from '@/components/SelectInputCombo';
+import TwoInput from '@/components/TwoInput';
 
 //Services
 import { bus }from '@/services/Bus';
@@ -41,7 +60,9 @@ export default {
     ExpandablePanel,
     InputComponent,
     SelectComponent,
-    Btn2
+    Btn2,
+    SelectInputCombo,
+    TwoInput
   },
   data(){
     return {
@@ -49,10 +70,16 @@ export default {
       END_TICK: registry.END_TICK,
       SLIDE_TYPE: registry.SLIDE_TYPE,
       FILE_SELECTED: registry.FILE_SELECTED,
+      MEDIA_WIDTH: registry.MEDIA_WIDTH,
+      MEDIA_HEIGHT: registry.MEDIA_HEIGHT,
 
       previouslySelected: null,
       showBrowseFiles: false,
       filename: '',
+
+      showImageProperties: false,
+      showVideoProperties: false,
+      showAudioProperties: false,
 
       startTickData: null,
       endTickData: null,
@@ -60,7 +87,33 @@ export default {
         {label: 'Video', id: 1},
         {label: 'Image', id: 2},
         {label: 'Audio', id: 3},
-      ]
+      ],
+
+      yPositionSICombo: {
+        index: this.index,
+        selectPlaceholder: 'y-position',
+        options: [
+          {label: 'Top', id: 'top'},
+          {label: 'Bottom', id: 'bottom'}
+        ],
+        selectName: registry.Y_POSITION,
+
+        inputPlaceholder: '1-100%',
+        inputName: registry.Y_POSITION_VALUE,
+      },
+
+      xPositionSICombo: {
+        index: this.index,
+        selectPlaceholder: 'x-position',
+        options: [
+          {label: 'Left', id: 'left'},
+          {label: 'Right', id: 'right'}
+        ],
+        selectName: registry.X_POSITION,
+
+        inputPlaceholder: '1-100%',
+        inputName: registry.X_POSITION_VALUE,
+      },
     }
   },
 
@@ -71,6 +124,12 @@ export default {
       let instruction = data.data;
       if(controlName === registry.SLIDE_TYPE){
         this.showBrowseFiles = true;
+      }else if(controlName === registry.TYPE_IMAGE){
+        this.showImageProperties = true;
+      }else if(controlName === registry.TYPE_VIDEO){
+        this.showVideoProperties = true;
+      }else if(controlName === registry.TYPE_AUDIO){
+        this.showAudioProperties = true;
       }
     },
     fileSelected(event){

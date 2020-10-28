@@ -14,7 +14,7 @@ module.exports = {
      
             slides = globalFunctions.sanitizeSlidesForDB(slides);
      
-            await Slide.bulkCreate(slides, {updateOnDuplicate: ["timing", "slideType", "path"] });
+            await Slide.bulkCreate(slides, {updateOnDuplicate: ["timing", "slideType", "path", "fileProperties"] });
      
             const allLessonSlides = await Slide.findAll({
                 where:{

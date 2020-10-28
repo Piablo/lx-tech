@@ -273,7 +273,22 @@ const actions = {
         const response = await axios.post('http://localhost:4000/api/upload?path=' + state.filePath, formData);
         if(response.data === "OK"){
             state.slides[state.activeIndexs[2]].path = state.filePath;
-            actions.saveSlides()
+
+            let slideType = state.slides[state.activeIndexs[2]].slideType;
+            let data = {
+                controlName: null
+            }
+
+            if(slideType === 'Image'){
+                data.controlName = registry.TYPE_IMAGE;
+            }else if(slideType === 'Video'){
+                data.controlName = registry.TYPE_VIDEO;
+            }else if(slideType === 'Audio'){
+                data.controlName = registry.TYPE_AUDIO;
+            }
+
+            await actions.saveSlides();
+            bus.$emit('slideEditorStateChange-' + state.activeIndexs[2], data);
         }
 
     }
@@ -309,8 +324,6 @@ const mutations = {
         let parentIndex = payload.parentIndex;
         let userInput = payload.userInput;
 
-
-        //////////////////////////////////////////////////////SLIDE_DATA//////////////////////////
         if(controlName === registry.START_TICK){
             state.slides[parentIndex].timing.startTick = parseInt(userInput);
         }
@@ -328,9 +341,6 @@ const mutations = {
             }
             state.slides[payload.index].slideType = userInput.label;
             bus.$emit('slideEditorStateChange-' + payload.index, data);
-            
-
-            //state.slideType = 
         }
         else if(controlName === registry.FILE_SELECTED){
             let request = {
@@ -350,22 +360,6 @@ const mutations = {
             
             actions.saveFile(request);
         }
-
-
-
-
- 
-        //////////////////////////////////////////////////////SLIDE_DATA//////////////////////////
-
-
-
-
-
-
-
-
-
-
         else if(controlName === registry.NEW_COURSE){
             let label = userInput;
             let level = 0;
@@ -424,6 +418,33 @@ const mutations = {
         else if(controlName === registry.STILL_WORKING){
             mutations.toggleModal(state, false)
             state.startActivityTimerState = true;
+        }
+        else if(controlName === registry.Y_POSITION){
+            let position = userInput.id;
+            let index = payload.index;
+            state.slides[index] = sharedFunctions.buildFilePropertiesModel(state.slides[index], "yPosition", position);
+        }
+        else if(controlName === registry.Y_POSITION_VALUE){
+            let index = payload.index;
+            state.slides[index] = sharedFunctions.buildFilePropertiesModel(state.slides[index], "yValue", userInput);
+        }
+        else if(controlName === registry.X_POSITION){
+            let position = userInput.id;
+            let index = payload.index;
+            state.slides[index] = sharedFunctions.buildFilePropertiesModel(state.slides[index], "xPosition", position);
+        }
+        else if(controlName === registry.X_POSITION_VALUE){
+            let index = payload.index;
+            state.slides[index] = sharedFunctions.buildFilePropertiesModel(state.slides[index], "xValue", userInput);
+        }
+        else if(controlName === registry.MEDIA_WIDTH){
+            let index = payload.index;
+            state.slides[index] = sharedFunctions.buildFilePropertiesModel(state.slides[index], "width", userInput);
+        }
+        else if(controlName === registry.MEDIA_HEIGHT){
+            let index = payload.index;
+            state.slides[index] = sharedFunctions.buildFilePropertiesModel(state.slides[index], "height", userInput);
+            debugger
         }
     },
     commitTreeviewData(state, treeviewData){

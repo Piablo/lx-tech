@@ -14,6 +14,7 @@ module.exports = {
                 parentId: slides[i].parentId,
                 slideType: slides[i].slideType,
                 path: slides[i].path,
+                fileProperties: JSON.stringify(slides[i].fileProperties),
             }
             returnArray.push(slide);
         }
@@ -32,6 +33,7 @@ module.exports = {
                 parentId: slides[i].parentId,
                 slideType: slides[i].slideType,
                 path: slides[i].path,
+                fileProperties: JSON.parse(slides[i].fileProperties),
             }
             returnArray.push(slide);
         }
